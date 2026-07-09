@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-le-indigo: oklch(0.11 0.14 284);
+  --color-le-blue: oklch(0.47 0.22 257);
+  --color-le-teal: oklch(0.77 0.14 188);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+:root {
+  --background: oklch(0.98 0 0);
+  --foreground: oklch(0.12 0.042 264);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.12 0.042 264);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.12 0.042 264);
+  --primary: oklch(0.47 0.22 257);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0.005 264);
+  --secondary-foreground: oklch(0.20 0.042 265);
+  --muted: oklch(0.96 0.005 264);
+  --muted-foreground: oklch(0.55 0.021 264);
+  --accent: oklch(0.77 0.14 188);
+  --accent-foreground: oklch(0.11 0.14 284);
+  --destructive: oklch(0.577 0.245 27);
+  --border: oklch(0.92 0.013 255);
+  --input: oklch(0.92 0.013 255);
+  --ring: oklch(0.47 0.22 257);
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: oklch(0.11 0.14 284);
+  --foreground: oklch(0.97 0.002 248);
+  --card: oklch(0.14 0.12 284);
+  --card-foreground: oklch(0.97 0.002 248);
+  --popover: oklch(0.13 0.13 284);
+  --popover-foreground: oklch(0.97 0.002 248);
+  --primary: oklch(0.58 0.22 257);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.17 0.10 284);
+  --secondary-foreground: oklch(0.97 0.002 248);
+  --muted: oklch(0.17 0.10 284);
+  --muted-foreground: oklch(0.65 0.05 284);
+  --accent: oklch(0.77 0.14 188);
+  --accent-foreground: oklch(0.11 0.14 284);
+  --destructive: oklch(0.704 0.191 22);
+  --border: oklch(0.21 0.10 284);
+  --input: oklch(0.21 0.10 284);
+  --ring: oklch(0.58 0.22 257);
+}
+
+/* Supreme + Prompt font faces — copy woff2 files into public/fonts/ */
+@font-face {
+  font-family: 'Supreme';
+  src: url('/fonts/supreme/supreme-extrabold.woff2') format('woff2');
+  font-weight: 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Supreme';
+  src: url('/fonts/supreme/supreme-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Supreme';
+  src: url('/fonts/supreme/supreme-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prompt';
+  src: url('/fonts/prompt/prompt-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Prompt';
+  src: url('/fonts/prompt/prompt-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+    outline-color: var(--ring);
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: 'Prompt', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Supreme', system-ui, sans-serif;
+    font-weight: 800;
+  }
+}
+
+/* LE signature span-accent headline */
+.le-headline span {
+  color: oklch(0.77 0.14 188);
+}
+.le-headline-blue span {
+  color: oklch(0.58 0.22 257);
+}
