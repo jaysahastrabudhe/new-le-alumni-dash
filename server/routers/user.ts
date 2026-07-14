@@ -22,6 +22,7 @@ export const userRouter = router({
       location: z.string().optional(),
       company: z.string().optional(),
       linkedinUrl: z.string().url().optional().or(z.literal('')),
+      avatarUrl: z.string().optional(),
       visibility: z.enum(['public', 'members', 'hidden']).optional(),
     }))
     .mutation(async ({ ctx, input }) => {

@@ -1,15 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useAuth } from '@/context/auth'
 import { trpc } from '@/lib/trpc'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Camera } from 'lucide-react'
 
 export const Route = createFileRoute('/_app/profile/')({
   component: ProfilePage,
@@ -23,6 +23,9 @@ function ProfilePage() {
 
   const [editing, setEditing] = useState(false)
   const [form, setForm] = useState({ name: '', headline: '', bio: '', location: '', company: '', linkedinUrl: '', visibility: 'members' as 'public' | 'members' | 'hidden' })
+
+  const [uploadingPhoto, setUploadingPhoto] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const startEdit = () => {
     if (!me) return
@@ -38,29 +41,113 @@ function ProfilePage() {
     setEditing(true)
   }
 
+  const handlePhotoFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 5 * 1024 * 1024) return
+    setUploadingPhoto(true)
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        const MAX = 512
+        let w = img.width
+        let h = img.height
+        if (w > h) {
+          if (w > MAX) { h = Math.round(h * MAX / w); w = MAX }
+        } else {
+          if (h > MAX) { w = Math.round(w * MAX / h); h = MAX }
+        }
+        canvas.width = w
+        canvas.height = h
+        canvas.getContext('2d')!.drawImage(img, 0, 0, w, h)
+        const base64 = canvas.toDataURL('image/jpeg', 0.82)
+        updateMutation.mutate({ avatarUrl: base64 }, {
+          onSuccess: () => { refetch(); setUploadingPhoto(false) },
+          onError: () => setUploadingPhoto(false),
+        })
+      }
+      img.src = ev.target?.result as string
+    }
+    reader.readAsDataURL(file)
+    // Reset so the same file can be re-selected if needed
+    e.target.value = ''
+  }
+
   const [newEntry, setNewEntry] = useState({ company: '', title: '', startDate: '', isCurrent: false })
 
   if (isLoading) return <div className="space-y-4 max-w-xl mx-auto"><Skeleton className="h-48 rounded-xl" /><Skeleton className="h-32 rounded-xl" /></div>
 
+  const avatarSrc = me?.avatarUrl ?? authUser?.avatarUrl
   const initials = (me?.name ?? authUser?.name ?? '?').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
       {/* Profile card */}
       <div className="rounded-xl border border-border bg-card p-6">
-        <div className="flex items-start gap-4">
-          <Avatar className="h-16 w-16">
-            {(me?.avatarUrl ?? authUser?.avatarUrl) && <AvatarImage src={(me?.avatarUrl ?? authUser?.avatarUrl)!} alt={me?.name} />}
-            <AvatarFallback className="text-xl font-bold bg-primary/10 text-primary">{initials}</AvatarFallback>
-          </Avatar>
-          <div className="flex-1">
+        <div className="flex items-start gap-5">
+          {/* Avatar with photo upload */}
+          <div className="shrink-0 flex flex-col items-center gap-1.5">
+            <div className="relative">
+              <div
+                className="relative h-[112px] w-[112px] rounded-2xl overflow-hidden"
+                style={{ background: 'oklch(0.47 0.22 257 / 0.15)' }}
+              >
+                {avatarSrc ? (
+                  <img
+                    src={avatarSrc}
+                    alt={me?.name}
+                    className={`h-full w-full object-cover transition-opacity duration-150 ${uploadingPhoto ? 'opacity-40' : 'opacity-100'}`}
+                  />
+                ) : (
+                  <div className={`h-full w-full flex items-center justify-center transition-opacity duration-150 ${uploadingPhoto ? 'opacity-40' : 'opacity-100'}`}>
+                    <span className="text-3xl font-bold text-primary">{initials}</span>
+                  </div>
+                )}
+                {uploadingPhoto && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="h-6 w-6 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+                  </div>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingPhoto}
+                className="absolute -bottom-1.5 -right-1.5 h-8 w-8 rounded-full flex items-center justify-center transition-all duration-150 active:scale-95 disabled:opacity-60"
+                style={{
+                  background: 'oklch(0.47 0.22 257)',
+                  border: '2px solid var(--background, #0a0a0f)',
+                  boxShadow: '0 2px 8px oklch(0 0 0 / 0.4)',
+                }}
+                aria-label="Upload profile photo"
+              >
+                <Camera className="h-3.5 w-3.5 text-white" />
+              </button>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="sr-only"
+                onChange={handlePhotoFile}
+              />
+            </div>
+            <p className="text-[10px] text-muted-foreground/40 text-center">JPG or PNG, max 5MB</p>
+          </div>
+
+          {/* Identity */}
+          <div className="flex-1 min-w-0 pt-1">
             <p className="font-bold text-xl">{me?.name}</p>
-            {me?.headline && <p className="text-muted-foreground text-sm">{me.headline}</p>}
-            <div className="flex gap-2 mt-2">
+            {me?.headline && <p className="text-muted-foreground text-sm mt-0.5">{me.headline}</p>}
+            <div className="flex gap-2 mt-3">
               <Badge variant={me?.role === 'alumni' ? 'default' : 'secondary'}>{me?.role ?? 'student'}</Badge>
               {me?.batchYear && <Badge variant="outline">Batch {me.batchYear}</Badge>}
             </div>
           </div>
+
           <Button size="sm" variant="outline" onClick={startEdit}>Edit</Button>
         </div>
 
@@ -119,7 +206,7 @@ function ProfilePage() {
               <div className="mt-1.5 h-2 w-2 rounded-full bg-accent shrink-0" />
               <div>
                 <p className="text-sm font-medium">{e.title} <span className="text-muted-foreground">at {e.company}</span></p>
-                <p className="text-xs text-muted-foreground">{e.startDate} {e.isCurrent && '— Present'}</p>
+                <p className="text-xs text-muted-foreground">{e.startDate} {e.isCurrent && '- Present'}</p>
               </div>
             </div>
           ))}

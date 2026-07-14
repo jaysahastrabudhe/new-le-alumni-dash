@@ -35,11 +35,11 @@ const ACTIVE_FILTER_STYLE: Record<AlumniCategory | 'all', string> = {
 }
 
 function avatarGradient(hue: string) {
-  return `linear-gradient(135deg, oklch(0.25 0.18 ${hue}) 0%, oklch(0.18 0.10 ${hue}) 100%)`
+  return `linear-gradient(135deg, oklch(0.35 0.18 ${hue}) 0%, oklch(0.20 0.12 ${hue}) 100%)`
 }
 
 function AlumniCard({ alumni }: { alumni: ShowcaseAlumni }) {
-  const { name, bio, company, role, category, location, avatarHue } = alumni
+  const { name, bio, company, role, category, location, avatarHue, avatarUrl } = alumni
   const initials = name
     .split(' ')
     .map((n) => n[0])
@@ -50,63 +50,82 @@ function AlumniCard({ alumni }: { alumni: ShowcaseAlumni }) {
 
   return (
     <div
-      className="alumni-card group relative rounded-2xl p-5 flex flex-col gap-3 opacity-0 overflow-hidden transition-transform duration-200 hover:-translate-y-0.5"
+      className="alumni-card group relative rounded-2xl p-5 flex flex-col gap-4 opacity-0 overflow-hidden"
       style={{
-        background: 'oklch(1 0 0 / 0.035)',
-        backdropFilter: 'blur(16px) saturate(160%)',
-        WebkitBackdropFilter: 'blur(16px) saturate(160%)',
-        border: '1px solid oklch(1 0 0 / 0.09)',
-        boxShadow: '0 4px 24px oklch(0 0 0 / 0.30), inset 0 1px 0 oklch(1 0 0 / 0.09)',
+        background: 'oklch(0.13 0.035 284)',
+        border: '1px solid oklch(0.22 0.05 284)',
+        transition: 'transform 200ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-2px)'
+        e.currentTarget.style.borderColor = 'oklch(0.77 0.14 188 / 0.40)'
+        e.currentTarget.style.boxShadow = '0 8px 32px oklch(0 0 0 / 0.40)'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = ''
+        e.currentTarget.style.borderColor = 'oklch(0.22 0.05 284)'
+        e.currentTarget.style.boxShadow = ''
       }}
     >
+      {/* Left accent bar */}
       <div
-        className="absolute -top-8 -left-8 w-32 h-32 rounded-full pointer-events-none opacity-40"
-        style={{
-          background: `radial-gradient(circle, oklch(0.60 0.16 ${avatarHue} / 0.35) 0%, transparent 65%)`,
-        }}
+        className="absolute left-0 top-4 bottom-4 w-[3px] rounded-r-full pointer-events-none origin-center scale-y-0 group-hover:scale-y-100 transition-transform duration-200 ease-out"
+        style={{ background: 'oklch(0.77 0.14 188)' }}
       />
-      <div className="flex items-start gap-3 relative">
+
+      {/* Header: avatar + identity block */}
+      <div className="flex items-start gap-3.5">
         <div
-          className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0 font-display font-extrabold text-white/90 text-sm shadow-lg"
+          className="h-[72px] w-[72px] rounded-xl shrink-0 overflow-hidden"
           style={{ background: avatarGradient(avatarHue) }}
         >
-          {initials}
+          {avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt={name}
+              className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.04]"
+            />
+          ) : (
+            <div className="h-full w-full flex items-center justify-center font-display font-extrabold text-white/90 text-xl">
+              {initials}
+            </div>
+          )}
         </div>
-        <div className="min-w-0 flex-1">
-          <p className="font-display font-extrabold text-sm text-foreground leading-tight">{name}</p>
-          <p className="text-[10px] font-semibold mt-0.5 text-accent truncate">{company}</p>
-          {role && <p className="text-[10px] text-muted-foreground/70 truncate mt-0.5">{role}</p>}
+
+        <div className="min-w-0 flex-1 pt-1">
+          <p className="font-display font-extrabold text-[15px] text-foreground leading-tight">{name}</p>
+          <p className="text-[11px] font-semibold mt-1 text-accent leading-tight truncate">{company}</p>
+          {role && <p className="text-[10px] text-muted-foreground/55 mt-0.5 truncate">{role}</p>}
         </div>
+
         <CategoryIcon
-          className={`h-3.5 w-3.5 shrink-0 mt-0.5 ${
+          className={`h-3.5 w-3.5 shrink-0 mt-1.5 ${
             category === 'founder'
-              ? 'text-accent/60'
+              ? 'text-accent/50'
               : category === 'placed'
-              ? 'text-primary/60'
-              : 'text-violet-400/60'
+              ? 'text-primary/50'
+              : 'text-violet-400/50'
           }`}
         />
       </div>
-      <p className="text-xs text-muted-foreground/80 leading-relaxed line-clamp-4 flex-1 relative">{bio}</p>
-      <div className="flex items-center justify-between gap-2 relative">
-        {location && (
-          <span className="flex items-center gap-1 text-[10px] text-muted-foreground/40">
+
+      {/* Bio */}
+      <p className="text-xs text-muted-foreground/70 leading-relaxed line-clamp-3 flex-1">{bio}</p>
+
+      {/* Footer: location + category chip */}
+      <div className="flex items-center justify-between gap-2">
+        {location ? (
+          <span className="flex items-center gap-1 text-[10px] text-muted-foreground/35">
             <MapPin className="h-2.5 w-2.5" />
             {location}
           </span>
-        )}
+        ) : <span />}
         <span
-          className={`ml-auto text-[9px] font-semibold uppercase tracking-[0.12em] px-2 py-0.5 rounded-full border ${CATEGORY_CHIP_STYLE[category]}`}
+          className={`text-[9px] font-semibold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full border ${CATEGORY_CHIP_STYLE[category]}`}
         >
           {CATEGORY_LABELS[category]}
         </span>
       </div>
-      <div
-        className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-        style={{
-          boxShadow: `inset 0 0 0 1px oklch(0.77 0.14 188 / 0.25), 0 0 28px oklch(0.77 0.14 188 / 0.08)`,
-        }}
-      />
     </div>
   )
 }

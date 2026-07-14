@@ -10,6 +10,7 @@ export type ShowcaseAlumni = {
   category: AlumniCategory
   location?: string
   avatarHue: string
+  avatarUrl?: string
 }
 
 export const ALUMNI: ShowcaseAlumni[] = [
