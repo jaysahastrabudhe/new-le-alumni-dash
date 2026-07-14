@@ -5,11 +5,23 @@ import { desc } from 'drizzle-orm'
 
 export const eventRouter = router({
   upcoming: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.query.events.findMany({
+    const eventsData = await ctx.db.query.events.findMany({
       where: (e, { and, eq, gte }) => and(eq(e.status, 'published'), gte(e.startsAt, new Date())),
       orderBy: (e, { asc }) => [asc(e.startsAt)],
       limit: 20,
+      with: {
+        rsvps: {
+          where: (r, { eq }) => eq(r.status, 'attending'),
+          columns: { userId: true, status: true },
+        },
+      },
     })
+    const userId = ctx.userId
+    return eventsData.map(({ rsvps, ...e }) => ({
+      ...e,
+      rsvpCount: rsvps.length,
+      userRsvpStatus: userId ? (rsvps.find((r) => r.userId === userId)?.status ?? null) : null,
+    }))
   }),
 
   past: publicProcedure

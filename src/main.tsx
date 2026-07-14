@@ -36,7 +36,7 @@ function InnerApp() {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ClerkProvider publishableKey={CLERK_KEY}>
+    <ClerkProvider publishableKey={CLERK_KEY} signInUrl="/login" signUpUrl="/login">
       <InnerApp />
     </ClerkProvider>
   </StrictMode>,

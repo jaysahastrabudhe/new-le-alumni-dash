@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { router, protectedProcedure, adminProcedure, publicProcedure } from '../trpc'
-import { users, careerEntries } from '../../db/schema'
-import { eq, ilike, and, desc } from 'drizzle-orm'
+import { users, careerEntries, jobs, events, mentorProfiles } from '../../db/schema'
+import { eq, ilike, and, desc, count, gte } from 'drizzle-orm'
 
 const visibilityCheck = (role: string | null) =>
   role ? ['public', 'members'] : ['public']
@@ -33,6 +33,22 @@ export const userRouter = router({
       return updated
     }),
 
+  stats: publicProcedure.query(async ({ ctx }) => {
+    const now = new Date()
+    const [alumniRes, jobsRes, eventsRes, mentorsRes] = await Promise.all([
+      ctx.db.select({ count: count() }).from(users).where(eq(users.isVerified, true)),
+      ctx.db.select({ count: count() }).from(jobs).where(eq(jobs.status, 'approved')),
+      ctx.db.select({ count: count() }).from(events).where(and(eq(events.status, 'published'), gte(events.startsAt, now))),
+      ctx.db.select({ count: count() }).from(mentorProfiles).where(eq(mentorProfiles.isAvailable, true)),
+    ])
+    return {
+      alumni: Number(alumniRes[0]?.count ?? 0),
+      jobs: Number(jobsRes[0]?.count ?? 0),
+      events: Number(eventsRes[0]?.count ?? 0),
+      mentors: Number(mentorsRes[0]?.count ?? 0),
+    }
+  }),
+
   directory: publicProcedure
     .input(z.object({
       search: z.string().optional(),
@@ -53,7 +69,7 @@ export const userRouter = router({
 
       const rows = await ctx.db.query.users.findMany({
         where: conditions.length ? and(...conditions) : undefined,
-        columns: { id: true, name: true, headline: true, company: true, location: true, batchYear: true, avatarUrl: true, role: true },
+        columns: { id: true, name: true, headline: true, company: true, location: true, batchYear: true, avatarUrl: true, role: true, linkedinUrl: true },
         orderBy: [desc(users.createdAt)],
         limit: input.limit,
         offset: (input.page - 1) * input.limit,
