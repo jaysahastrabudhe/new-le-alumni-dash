@@ -8,7 +8,6 @@ import {
   HandshakeIcon,
   UserCircle,
   ShieldCheck,
-  Star,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -17,7 +16,6 @@ const navItems = [
   { to: '/directory', icon: Users, label: 'Directory' },
   { to: '/jobs', icon: Briefcase, label: 'Jobs' },
   { to: '/events', icon: CalendarDays, label: 'Events' },
-  { to: '/know-your-alumni', icon: Star, label: 'Alumni Stories' },
   { to: '/mentorship', icon: HandshakeIcon, label: 'Mentorship' },
   { to: '/profile', icon: UserCircle, label: 'My Profile' },
 ] as const

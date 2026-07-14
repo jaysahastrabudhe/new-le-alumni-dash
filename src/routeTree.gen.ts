@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as AlumniRouteImport } from './routes/alumni'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,7 +18,6 @@ import { Route as AdminMembersRouteImport } from './routes/admin/members'
 import { Route as AdminJobsRouteImport } from './routes/admin/jobs'
 import { Route as AppProfileIndexRouteImport } from './routes/_app/profile/index'
 import { Route as AppMentorshipIndexRouteImport } from './routes/_app/mentorship/index'
-import { Route as AppKnowYourAlumniIndexRouteImport } from './routes/_app/know-your-alumni/index'
 import { Route as AppJobsIndexRouteImport } from './routes/_app/jobs/index'
 import { Route as AppEventsIndexRouteImport } from './routes/_app/events/index'
 import { Route as AppDirectoryIndexRouteImport } from './routes/_app/directory/index'
@@ -29,6 +29,11 @@ import { Route as AppDirectoryUserIdRouteImport } from './routes/_app/directory/
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlumniRoute = AlumniRouteImport.update({
+  id: '/alumni',
+  path: '/alumni',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -63,11 +68,6 @@ const AppProfileIndexRoute = AppProfileIndexRouteImport.update({
 const AppMentorshipIndexRoute = AppMentorshipIndexRouteImport.update({
   id: '/mentorship/',
   path: '/mentorship/',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppKnowYourAlumniIndexRoute = AppKnowYourAlumniIndexRouteImport.update({
-  id: '/know-your-alumni/',
-  path: '/know-your-alumni/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppJobsIndexRoute = AppJobsIndexRouteImport.update({
@@ -109,6 +109,7 @@ const AppDirectoryUserIdRoute = AppDirectoryUserIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/alumni': typeof AlumniRoute
   '/login': typeof LoginRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/members': typeof AdminMembersRoute
@@ -119,13 +120,13 @@ export interface FileRoutesByFullPath {
   '/directory/': typeof AppDirectoryIndexRoute
   '/events/': typeof AppEventsIndexRoute
   '/jobs/': typeof AppJobsIndexRoute
-  '/know-your-alumni/': typeof AppKnowYourAlumniIndexRoute
   '/mentorship/': typeof AppMentorshipIndexRoute
   '/profile/': typeof AppProfileIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/alumni': typeof AlumniRoute
   '/login': typeof LoginRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/members': typeof AdminMembersRoute
@@ -136,7 +137,6 @@ export interface FileRoutesByTo {
   '/directory': typeof AppDirectoryIndexRoute
   '/events': typeof AppEventsIndexRoute
   '/jobs': typeof AppJobsIndexRoute
-  '/know-your-alumni': typeof AppKnowYourAlumniIndexRoute
   '/mentorship': typeof AppMentorshipIndexRoute
   '/profile': typeof AppProfileIndexRoute
 }
@@ -145,6 +145,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
+  '/alumni': typeof AlumniRoute
   '/login': typeof LoginRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/members': typeof AdminMembersRoute
@@ -155,7 +156,6 @@ export interface FileRoutesById {
   '/_app/directory/': typeof AppDirectoryIndexRoute
   '/_app/events/': typeof AppEventsIndexRoute
   '/_app/jobs/': typeof AppJobsIndexRoute
-  '/_app/know-your-alumni/': typeof AppKnowYourAlumniIndexRoute
   '/_app/mentorship/': typeof AppMentorshipIndexRoute
   '/_app/profile/': typeof AppProfileIndexRoute
 }
@@ -164,6 +164,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/alumni'
     | '/login'
     | '/admin/jobs'
     | '/admin/members'
@@ -174,13 +175,13 @@ export interface FileRouteTypes {
     | '/directory/'
     | '/events/'
     | '/jobs/'
-    | '/know-your-alumni/'
     | '/mentorship/'
     | '/profile/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
+    | '/alumni'
     | '/login'
     | '/admin/jobs'
     | '/admin/members'
@@ -191,7 +192,6 @@ export interface FileRouteTypes {
     | '/directory'
     | '/events'
     | '/jobs'
-    | '/know-your-alumni'
     | '/mentorship'
     | '/profile'
   id:
@@ -199,6 +199,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_app'
     | '/admin'
+    | '/alumni'
     | '/login'
     | '/admin/jobs'
     | '/admin/members'
@@ -209,7 +210,6 @@ export interface FileRouteTypes {
     | '/_app/directory/'
     | '/_app/events/'
     | '/_app/jobs/'
-    | '/_app/know-your-alumni/'
     | '/_app/mentorship/'
     | '/_app/profile/'
   fileRoutesById: FileRoutesById
@@ -218,6 +218,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
+  AlumniRoute: typeof AlumniRoute
   LoginRoute: typeof LoginRoute
 }
 
@@ -228,6 +229,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alumni': {
+      id: '/alumni'
+      path: '/alumni'
+      fullPath: '/alumni'
+      preLoaderRoute: typeof AlumniRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -277,13 +285,6 @@ declare module '@tanstack/react-router' {
       path: '/mentorship'
       fullPath: '/mentorship/'
       preLoaderRoute: typeof AppMentorshipIndexRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/_app/know-your-alumni/': {
-      id: '/_app/know-your-alumni/'
-      path: '/know-your-alumni'
-      fullPath: '/know-your-alumni/'
-      preLoaderRoute: typeof AppKnowYourAlumniIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/jobs/': {
@@ -346,7 +347,6 @@ interface AppRouteChildren {
   AppDirectoryIndexRoute: typeof AppDirectoryIndexRoute
   AppEventsIndexRoute: typeof AppEventsIndexRoute
   AppJobsIndexRoute: typeof AppJobsIndexRoute
-  AppKnowYourAlumniIndexRoute: typeof AppKnowYourAlumniIndexRoute
   AppMentorshipIndexRoute: typeof AppMentorshipIndexRoute
   AppProfileIndexRoute: typeof AppProfileIndexRoute
 }
@@ -359,7 +359,6 @@ const AppRouteChildren: AppRouteChildren = {
   AppDirectoryIndexRoute: AppDirectoryIndexRoute,
   AppEventsIndexRoute: AppEventsIndexRoute,
   AppJobsIndexRoute: AppJobsIndexRoute,
-  AppKnowYourAlumniIndexRoute: AppKnowYourAlumniIndexRoute,
   AppMentorshipIndexRoute: AppMentorshipIndexRoute,
   AppProfileIndexRoute: AppProfileIndexRoute,
 }
@@ -382,6 +381,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
+  AlumniRoute: AlumniRoute,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
