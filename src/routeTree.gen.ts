@@ -17,6 +17,7 @@ import { Route as AdminMembersRouteImport } from './routes/admin/members'
 import { Route as AdminJobsRouteImport } from './routes/admin/jobs'
 import { Route as AppProfileIndexRouteImport } from './routes/_app/profile/index'
 import { Route as AppMentorshipIndexRouteImport } from './routes/_app/mentorship/index'
+import { Route as AppKnowYourAlumniIndexRouteImport } from './routes/_app/know-your-alumni/index'
 import { Route as AppJobsIndexRouteImport } from './routes/_app/jobs/index'
 import { Route as AppEventsIndexRouteImport } from './routes/_app/events/index'
 import { Route as AppDirectoryIndexRouteImport } from './routes/_app/directory/index'
@@ -62,6 +63,11 @@ const AppProfileIndexRoute = AppProfileIndexRouteImport.update({
 const AppMentorshipIndexRoute = AppMentorshipIndexRouteImport.update({
   id: '/mentorship/',
   path: '/mentorship/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppKnowYourAlumniIndexRoute = AppKnowYourAlumniIndexRouteImport.update({
+  id: '/know-your-alumni/',
+  path: '/know-your-alumni/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppJobsIndexRoute = AppJobsIndexRouteImport.update({
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/directory/': typeof AppDirectoryIndexRoute
   '/events/': typeof AppEventsIndexRoute
   '/jobs/': typeof AppJobsIndexRoute
+  '/know-your-alumni/': typeof AppKnowYourAlumniIndexRoute
   '/mentorship/': typeof AppMentorshipIndexRoute
   '/profile/': typeof AppProfileIndexRoute
 }
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/directory': typeof AppDirectoryIndexRoute
   '/events': typeof AppEventsIndexRoute
   '/jobs': typeof AppJobsIndexRoute
+  '/know-your-alumni': typeof AppKnowYourAlumniIndexRoute
   '/mentorship': typeof AppMentorshipIndexRoute
   '/profile': typeof AppProfileIndexRoute
 }
@@ -147,6 +155,7 @@ export interface FileRoutesById {
   '/_app/directory/': typeof AppDirectoryIndexRoute
   '/_app/events/': typeof AppEventsIndexRoute
   '/_app/jobs/': typeof AppJobsIndexRoute
+  '/_app/know-your-alumni/': typeof AppKnowYourAlumniIndexRoute
   '/_app/mentorship/': typeof AppMentorshipIndexRoute
   '/_app/profile/': typeof AppProfileIndexRoute
 }
@@ -165,6 +174,7 @@ export interface FileRouteTypes {
     | '/directory/'
     | '/events/'
     | '/jobs/'
+    | '/know-your-alumni/'
     | '/mentorship/'
     | '/profile/'
   fileRoutesByTo: FileRoutesByTo
@@ -181,6 +191,7 @@ export interface FileRouteTypes {
     | '/directory'
     | '/events'
     | '/jobs'
+    | '/know-your-alumni'
     | '/mentorship'
     | '/profile'
   id:
@@ -198,6 +209,7 @@ export interface FileRouteTypes {
     | '/_app/directory/'
     | '/_app/events/'
     | '/_app/jobs/'
+    | '/_app/know-your-alumni/'
     | '/_app/mentorship/'
     | '/_app/profile/'
   fileRoutesById: FileRoutesById
@@ -267,6 +279,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMentorshipIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/know-your-alumni/': {
+      id: '/_app/know-your-alumni/'
+      path: '/know-your-alumni'
+      fullPath: '/know-your-alumni/'
+      preLoaderRoute: typeof AppKnowYourAlumniIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/jobs/': {
       id: '/_app/jobs/'
       path: '/jobs'
@@ -327,6 +346,7 @@ interface AppRouteChildren {
   AppDirectoryIndexRoute: typeof AppDirectoryIndexRoute
   AppEventsIndexRoute: typeof AppEventsIndexRoute
   AppJobsIndexRoute: typeof AppJobsIndexRoute
+  AppKnowYourAlumniIndexRoute: typeof AppKnowYourAlumniIndexRoute
   AppMentorshipIndexRoute: typeof AppMentorshipIndexRoute
   AppProfileIndexRoute: typeof AppProfileIndexRoute
 }
@@ -339,6 +359,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppDirectoryIndexRoute: AppDirectoryIndexRoute,
   AppEventsIndexRoute: AppEventsIndexRoute,
   AppJobsIndexRoute: AppJobsIndexRoute,
+  AppKnowYourAlumniIndexRoute: AppKnowYourAlumniIndexRoute,
   AppMentorshipIndexRoute: AppMentorshipIndexRoute,
   AppProfileIndexRoute: AppProfileIndexRoute,
 }

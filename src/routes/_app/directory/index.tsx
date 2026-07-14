@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Search, Linkedin } from 'lucide-react'
+import { Search, ExternalLink } from 'lucide-react'
 import { trpc } from '@/lib/trpc'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -61,7 +61,7 @@ function AlumniCard({ id, name, headline, company, location, batchYear, avatarUr
           onClick={(e) => e.stopPropagation()}
           className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-150 p-1.5 rounded-lg bg-card border border-border/50 hover:border-accent/40 hover:bg-accent/10"
         >
-          <Linkedin className="h-3.5 w-3.5 text-muted-foreground hover:text-accent transition-colors" />
+          <ExternalLink className="h-3.5 w-3.5 text-muted-foreground hover:text-accent transition-colors" />
         </a>
       )}
     </div>
