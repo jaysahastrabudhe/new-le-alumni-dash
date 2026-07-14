@@ -62,7 +62,7 @@ function LoginPage() {
   const isPending = loginMutation.isPending || registerMutation.isPending
 
   return (
-    <div className="min-h-screen flex items-center justify-center dark bg-background">
+    <div className="min-h-screen flex items-center justify-center dark bg-background text-foreground">
       <div
         className="absolute inset-0 opacity-10"
         style={{
