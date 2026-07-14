@@ -301,7 +301,7 @@ function PublicAlumniPage() {
               })}
             </div>
 
-            <p className="text-[10px] text-muted-foreground/40 uppercase tracking-[0.12em] font-semibold -mb-2">
+            <p className="text-[10px] text-muted-foreground/40 uppercase tracking-[0.12em] font-semibold">
               {filtered.length} {filtered.length === 1 ? 'alumnus' : 'alumni'}
             </p>
 
