@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently \"vite\" \"tsx watch server/index.ts\" --names vite,api --prefix-colors cyan,green",
     "dev:server": "tsx watch server/index.ts",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
@@ -59,6 +59,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
     "autoprefixer": "^10.5.2",
+    "concurrently": "^10.0.3",
     "oxlint": "^1.71.0",
     "tailwindcss": "^4.3.2",
     "tsx": "^4.23.0",
