@@ -10,7 +10,8 @@ export function makeTRPCClient() {
       httpBatchLink({
         url: `${import.meta.env.VITE_API_URL ?? ''}/api/trpc`,
         async headers() {
-          return {}
+          const token = localStorage.getItem('le_token')
+          return token ? { Authorization: `Bearer ${token}` } : {}
         },
       }),
     ],

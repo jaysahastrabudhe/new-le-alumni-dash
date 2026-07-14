@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
-import { useUser } from '@clerk/clerk-react'
+import { useAuth } from '@/context/auth'
 import { Briefcase, CalendarDays, HandshakeIcon, ArrowRight } from 'lucide-react'
 import { animate, stagger } from 'animejs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -66,7 +66,7 @@ function MiniAlumniCard({ id, name, headline, company, batchYear, avatarUrl }: M
 }
 
 function DashboardPage() {
-  const { user } = useUser()
+  const { user } = useAuth()
   const { data: stats } = trpc.user.stats.useQuery()
   const { data: recent } = trpc.user.directory.useQuery({ page: 1, limit: 4 })
 
@@ -85,7 +85,7 @@ function DashboardPage() {
     })
   }, [])
 
-  const firstName = user?.firstName ?? 'there'
+  const firstName = user?.name?.split(' ')[0] ?? 'there'
 
   return (
     <div className="space-y-5" ref={containerRef}>

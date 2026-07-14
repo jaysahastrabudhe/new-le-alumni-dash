@@ -1,6 +1,6 @@
-import { UserButton } from '@clerk/clerk-react'
-import { useRouterState } from '@tanstack/react-router'
-import { Menu, Bell } from 'lucide-react'
+import { useRouterState, useNavigate } from '@tanstack/react-router'
+import { Menu, Bell, LogOut } from 'lucide-react'
+import { useAuth } from '@/context/auth'
 
 const crumbs: Record<string, string> = {
   '/dashboard': 'Dashboard',
@@ -9,6 +9,7 @@ const crumbs: Record<string, string> = {
   '/events': 'Events',
   '/mentorship': 'Mentorship',
   '/profile': 'My Profile',
+  '/know-your-alumni': 'Alumni Stories',
   '/admin/members': 'Admin · Members',
   '/admin/jobs': 'Admin · Jobs',
 }
@@ -16,10 +17,16 @@ const crumbs: Record<string, string> = {
 export default function TopNav() {
   const { pathname } = useRouterState({ select: (s) => s.location })
   const title = crumbs[pathname] ?? 'LE Alumni'
+  const { logout } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    void navigate({ to: '/login' })
+  }
 
   return (
     <header className="h-16 border-b border-border bg-card flex items-center px-4 lg:px-6 gap-4">
-      {/* Mobile menu placeholder */}
       <button className="lg:hidden p-2 rounded-md text-muted-foreground hover:text-foreground">
         <Menu className="h-5 w-5" />
       </button>
@@ -30,7 +37,13 @@ export default function TopNav() {
         <button className="p-2 rounded-md text-muted-foreground hover:text-foreground relative">
           <Bell className="h-5 w-5" />
         </button>
-        <UserButton afterSignOutUrl="/login" />
+        <button
+          onClick={handleLogout}
+          className="p-2 rounded-md text-muted-foreground hover:text-foreground transition-colors"
+          title="Sign out"
+        >
+          <LogOut className="h-5 w-5" />
+        </button>
       </div>
     </header>
   )

@@ -2,8 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ClerkProvider } from '@clerk/clerk-react'
 import { trpc, makeTRPCClient } from '@/lib/trpc'
+import { AuthProvider } from '@/context/auth'
 import { routeTree } from './routeTree.gen'
 import './index.css'
 
@@ -22,8 +22,6 @@ declare module '@tanstack/react-router' {
   interface Register { router: typeof router }
 }
 
-const CLERK_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
-
 function InnerApp() {
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
@@ -36,8 +34,8 @@ function InnerApp() {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ClerkProvider publishableKey={CLERK_KEY} signInUrl="/login" signUpUrl="/login">
+    <AuthProvider>
       <InnerApp />
-    </ClerkProvider>
+    </AuthProvider>
   </StrictMode>,
 )

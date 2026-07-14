@@ -3,7 +3,7 @@ import { sql } from 'drizzle-orm'
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
-  clerkId: text('clerk_id').unique().notNull(),
+  passwordHash: text('password_hash'),
   role: text('role', { enum: ['student', 'alumni', 'admin'] }).default('student').notNull(),
   name: text('name').notNull(),
   email: text('email').unique().notNull(),

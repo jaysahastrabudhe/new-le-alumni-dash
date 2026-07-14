@@ -1,6 +1,7 @@
 import type { IncomingMessage } from 'http'
 import { neon } from '@neondatabase/serverless'
 import { drizzle } from 'drizzle-orm/neon-http'
+import jwt from 'jsonwebtoken'
 import * as schema from '../db/schema'
 import * as relations from '../db/relations'
 
@@ -25,19 +26,10 @@ export async function createContext({ req }: { req: IncomingMessage }): Promise<
   if (!token) return { userId: null, role: null, db }
 
   try {
-    const { verifyToken } = await import('@clerk/backend')
-    const payload = await verifyToken(token, {
-      secretKey: process.env.CLERK_SECRET_KEY!,
-    })
-
-    const user = await db.query.users.findFirst({
-      where: (u, { eq }) => eq(u.clerkId, payload.sub),
-      columns: { id: true, role: true },
-    })
-
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as { sub: string; role: string }
     return {
-      userId: user?.id ?? null,
-      role: user?.role ?? null,
+      userId: payload.sub,
+      role: payload.role as 'student' | 'alumni' | 'admin',
       db,
     }
   } catch {

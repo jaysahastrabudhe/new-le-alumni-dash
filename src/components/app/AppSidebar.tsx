@@ -1,5 +1,5 @@
 import { Link, useRouterState } from '@tanstack/react-router'
-import { useUser } from '@clerk/clerk-react'
+import { useAuth } from '@/context/auth'
 import {
   LayoutDashboard,
   Users,
@@ -24,7 +24,7 @@ const navItems = [
 
 export default function AppSidebar() {
   const { pathname } = useRouterState({ select: (s) => s.location })
-  const { user } = useUser()
+  const { user } = useAuth()
 
   return (
     <aside className="hidden lg:flex flex-col w-[220px] min-h-screen bg-card le-surface border-r border-border/40 relative z-20">
@@ -64,7 +64,7 @@ export default function AppSidebar() {
       </nav>
 
       {/* Admin */}
-      {user?.publicMetadata?.role === 'admin' && (
+      {user?.role === 'admin' && (
         <div className="px-2 pb-2 border-t border-border/30 pt-2">
           <Link
             to="/admin/members"
@@ -78,18 +78,18 @@ export default function AppSidebar() {
 
       {/* User chip */}
       <div className="px-3 py-3 border-t border-border/30 flex items-center gap-2.5">
-        {user?.imageUrl ? (
-          <img src={user.imageUrl} alt={user.fullName ?? ''} className="h-7 w-7 rounded-full object-cover flex-shrink-0 ring-1 ring-accent/30" />
+        {user?.avatarUrl ? (
+          <img src={user.avatarUrl} alt={user.name} className="h-7 w-7 rounded-full object-cover flex-shrink-0 ring-1 ring-accent/30" />
         ) : (
           <div className="h-7 w-7 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
             <span className="text-[10px] font-bold text-primary">
-              {user?.firstName?.[0]}{user?.lastName?.[0]}
+              {user?.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
             </span>
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <p className="text-xs font-semibold text-foreground truncate leading-none">{user?.fullName}</p>
-          <p className="text-[10px] text-muted-foreground truncate mt-0.5">{user?.primaryEmailAddress?.emailAddress}</p>
+          <p className="text-xs font-semibold text-foreground truncate leading-none">{user?.name}</p>
+          <p className="text-[10px] text-muted-foreground truncate mt-0.5">{user?.email}</p>
         </div>
       </div>
     </aside>

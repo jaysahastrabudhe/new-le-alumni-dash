@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { useUser } from '@clerk/clerk-react'
+import { useAuth } from '@/context/auth'
 import { trpc } from '@/lib/trpc'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -16,7 +16,7 @@ export const Route = createFileRoute('/_app/profile/')({
 })
 
 function ProfilePage() {
-  const { user: clerkUser } = useUser()
+  const { user: authUser } = useAuth()
   const { data: me, isLoading, refetch } = trpc.user.me.useQuery()
   const updateMutation = trpc.user.update.useMutation({ onSuccess: () => refetch() })
   const addCareerMutation = trpc.user.addCareerEntry.useMutation({ onSuccess: () => refetch() })
@@ -42,7 +42,7 @@ function ProfilePage() {
 
   if (isLoading) return <div className="space-y-4 max-w-xl mx-auto"><Skeleton className="h-48 rounded-xl" /><Skeleton className="h-32 rounded-xl" /></div>
 
-  const initials = (me?.name ?? clerkUser?.fullName ?? '?').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
+  const initials = (me?.name ?? authUser?.name ?? '?').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
@@ -50,7 +50,7 @@ function ProfilePage() {
       <div className="rounded-xl border border-border bg-card p-6">
         <div className="flex items-start gap-4">
           <Avatar className="h-16 w-16">
-            {clerkUser?.imageUrl && <AvatarImage src={clerkUser.imageUrl} alt={me?.name} />}
+            {(me?.avatarUrl ?? authUser?.avatarUrl) && <AvatarImage src={(me?.avatarUrl ?? authUser?.avatarUrl)!} alt={me?.name} />}
             <AvatarFallback className="text-xl font-bold bg-primary/10 text-primary">{initials}</AvatarFallback>
           </Avatar>
           <div className="flex-1">
