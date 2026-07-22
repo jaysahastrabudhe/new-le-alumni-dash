@@ -118,7 +118,7 @@ for (const mentor of MENTORS) {
       company: "Let's Enterprise",
       location: 'Pune, India',
       avatarUrl: mentor.avatarUrl,
-      visibility: 'members',
+      visibility: 'hidden',
       isVerified: true,
     })
     .onConflictDoUpdate({
@@ -129,6 +129,7 @@ for (const mentor of MENTORS) {
         company: "Let's Enterprise",
         location: 'Pune, India',
         avatarUrl: mentor.avatarUrl,
+        visibility: 'hidden',
         isVerified: true,
         updatedAt: new Date(),
       },
