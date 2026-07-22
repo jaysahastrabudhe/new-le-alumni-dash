@@ -4,6 +4,7 @@ import { userRouter } from './user.js'
 import { jobRouter } from './job.js'
 import { eventRouter } from './event.js'
 import { mentorRouter } from './mentor.js'
+import { settingsRouter } from './settings.js'
 
 export const appRouter = router({
   auth: authRouter,
@@ -11,6 +12,7 @@ export const appRouter = router({
   job: jobRouter,
   event: eventRouter,
   mentor: mentorRouter,
+  settings: settingsRouter,
 })
 
 export type AppRouter = typeof appRouter

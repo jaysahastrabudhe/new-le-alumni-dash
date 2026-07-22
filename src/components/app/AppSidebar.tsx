@@ -11,19 +11,25 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { BrandLogo } from '@/components/brand-logo'
+import { trpc } from '@/lib/trpc'
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/directory', icon: Users, label: 'Directory' },
-  { to: '/jobs', icon: Briefcase, label: 'Jobs' },
-  { to: '/events', icon: CalendarDays, label: 'Events' },
-  { to: '/mentorship', icon: HandshakeIcon, label: 'Mentorship' },
+  { to: '/directory', icon: Users, label: 'Directory', section: 'directory' },
+  { to: '/jobs', icon: Briefcase, label: 'Jobs', section: 'jobs' },
+  { to: '/events', icon: CalendarDays, label: 'Events', section: 'events' },
+  { to: '/mentorship', icon: HandshakeIcon, label: 'Mentorship', section: 'mentorship' },
   { to: '/profile', icon: UserCircle, label: 'My Profile' },
 ] as const
 
 export default function AppSidebar() {
   const { pathname } = useRouterState({ select: (s) => s.location })
   const { user } = useAuth()
+  const { data: sections } = trpc.settings.list.useQuery()
+  const visibleItems = navItems.filter((item) => {
+    if (!('section' in item) || user?.role === 'admin') return true
+    return sections?.find((section) => section.key === item.section)?.isVisible ?? item.section !== 'jobs'
+  })
 
   return (
     <aside className="hidden lg:flex flex-col w-[248px] min-h-screen bg-card/80 backdrop-blur-xl border-r border-white/[0.07] relative z-20">
@@ -35,7 +41,7 @@ export default function AppSidebar() {
       {/* Nav */}
       <nav className="flex-1 px-3 py-5 space-y-1">
         <p className="px-3 mb-3 text-[9px] font-bold uppercase tracking-[0.18em] text-muted-foreground/45">Member space</p>
-        {navItems.map(({ to, icon: Icon, label }) => {
+        {visibleItems.map(({ to, icon: Icon, label }) => {
           const isActive = pathname === to || pathname.startsWith(to + '/')
           return (
             <Link

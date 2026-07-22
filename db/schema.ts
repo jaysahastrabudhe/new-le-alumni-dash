@@ -68,9 +68,16 @@ export const eventRsvps = pgTable('event_rsvps', {
 
 export const mentorProfiles = pgTable('mentor_profiles', {
   userId: uuid('user_id').primaryKey().references(() => users.id, { onDelete: 'cascade' }),
+  category: text('category', { enum: ['alumni', 'industry_expert', 'lets_enterprise_mentor'] }).default('alumni').notNull(),
   isAvailable: boolean('is_available').default(true).notNull(),
   topics: text('topics').array().notNull().default(sql`'{}'::text[]`),
   capacity: integer('capacity').default(3).notNull(),
+})
+
+export const appSections = pgTable('app_sections', {
+  key: text('key', { enum: ['directory', 'jobs', 'events', 'mentorship'] }).primaryKey(),
+  isVisible: boolean('is_visible').default(true).notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
 export const mentorships = pgTable('mentorships', {

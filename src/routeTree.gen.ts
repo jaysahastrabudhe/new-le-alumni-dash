@@ -14,6 +14,8 @@ import { Route as AlumniRouteImport } from './routes/alumni'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminMentorsRouteImport } from './routes/admin/mentors'
 import { Route as AdminMembersRouteImport } from './routes/admin/members'
 import { Route as AdminJobsRouteImport } from './routes/admin/jobs'
 import { Route as AppProfileIndexRouteImport } from './routes/_app/profile/index'
@@ -49,6 +51,16 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMentorsRoute = AdminMentorsRouteImport.update({
+  id: '/mentors',
+  path: '/mentors',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminMembersRoute = AdminMembersRouteImport.update({
   id: '/members',
@@ -113,6 +125,8 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/members': typeof AdminMembersRoute
+  '/admin/mentors': typeof AdminMentorsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/directory/$userId': typeof AppDirectoryUserIdRoute
   '/jobs/$jobId': typeof AppJobsJobIdRoute
   '/jobs/new': typeof AppJobsNewRoute
@@ -130,6 +144,8 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/members': typeof AdminMembersRoute
+  '/admin/mentors': typeof AdminMentorsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/directory/$userId': typeof AppDirectoryUserIdRoute
   '/jobs/$jobId': typeof AppJobsJobIdRoute
   '/jobs/new': typeof AppJobsNewRoute
@@ -149,6 +165,8 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/admin/jobs': typeof AdminJobsRoute
   '/admin/members': typeof AdminMembersRoute
+  '/admin/mentors': typeof AdminMentorsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/_app/directory/$userId': typeof AppDirectoryUserIdRoute
   '/_app/jobs/$jobId': typeof AppJobsJobIdRoute
   '/_app/jobs/new': typeof AppJobsNewRoute
@@ -168,6 +186,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/admin/jobs'
     | '/admin/members'
+    | '/admin/mentors'
+    | '/admin/settings'
     | '/directory/$userId'
     | '/jobs/$jobId'
     | '/jobs/new'
@@ -185,6 +205,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/admin/jobs'
     | '/admin/members'
+    | '/admin/mentors'
+    | '/admin/settings'
     | '/directory/$userId'
     | '/jobs/$jobId'
     | '/jobs/new'
@@ -203,6 +225,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/admin/jobs'
     | '/admin/members'
+    | '/admin/mentors'
+    | '/admin/settings'
     | '/_app/directory/$userId'
     | '/_app/jobs/$jobId'
     | '/_app/jobs/new'
@@ -258,6 +282,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/mentors': {
+      id: '/admin/mentors'
+      path: '/mentors'
+      fullPath: '/admin/mentors'
+      preLoaderRoute: typeof AdminMentorsRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/members': {
       id: '/admin/members'
@@ -368,11 +406,15 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 interface AdminRouteChildren {
   AdminJobsRoute: typeof AdminJobsRoute
   AdminMembersRoute: typeof AdminMembersRoute
+  AdminMentorsRoute: typeof AdminMentorsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminJobsRoute: AdminJobsRoute,
   AdminMembersRoute: AdminMembersRoute,
+  AdminMentorsRoute: AdminMentorsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

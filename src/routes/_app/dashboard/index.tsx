@@ -71,6 +71,8 @@ function DashboardPage() {
   const { user } = useAuth()
   const { data: stats } = trpc.user.stats.useQuery()
   const { data: recent } = trpc.user.directory.useQuery({ page: 1, limit: 4 })
+  const { data: sections } = trpc.settings.list.useQuery()
+  const jobsVisible = user?.role === 'admin' || (sections?.find((section) => section.key === 'jobs')?.isVisible ?? false)
 
   const containerRef = useRef<HTMLDivElement>(null)
   const alumniRef = useCountUp(stats?.alumni ?? 0)
@@ -121,7 +123,7 @@ function DashboardPage() {
           </div>
         </div>
 
-        <StatTile label="Open Jobs" value={stats?.jobs ?? 0} icon={Briefcase} />
+        {jobsVisible && <StatTile label="Open Jobs" value={stats?.jobs ?? 0} icon={Briefcase} />}
         <StatTile label="Upcoming Events" value={stats?.events ?? 0} icon={CalendarDays} accent />
       </div>
 
@@ -140,7 +142,7 @@ function DashboardPage() {
           </p>
         </div>
 
-        <div className="md:col-span-2 grid sm:grid-cols-2 gap-4">
+        <div className={`md:col-span-2 grid gap-4 ${jobsVisible ? 'sm:grid-cols-2' : ''}`}>
           <div className="rounded-[1.4rem] bg-gradient-to-br from-primary/15 to-card border border-primary/15 p-5 sm:p-6 flex flex-col justify-between hover:border-primary/25 transition-colors min-h-48">
             <div>
               <p className="text-sm font-semibold text-foreground">Find a Mentor</p>
@@ -153,7 +155,7 @@ function DashboardPage() {
             </Button>
           </div>
 
-          <div className="rounded-[1.4rem] bg-gradient-to-br from-accent/[0.10] to-card border border-accent/15 p-5 sm:p-6 flex flex-col justify-between hover:border-accent/25 transition-colors min-h-48">
+          {jobsVisible && <div className="rounded-[1.4rem] bg-gradient-to-br from-accent/[0.10] to-card border border-accent/15 p-5 sm:p-6 flex flex-col justify-between hover:border-accent/25 transition-colors min-h-48">
             <div>
               <p className="text-sm font-semibold text-foreground">Post a Job</p>
               <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
@@ -163,7 +165,7 @@ function DashboardPage() {
             <Button asChild size="sm" variant="outline" className="mt-4 w-fit gap-1.5">
               <Link to="/jobs/new">Post an opening <ArrowRight className="h-3.5 w-3.5" /></Link>
             </Button>
-          </div>
+          </div>}
         </div>
       </div>
 

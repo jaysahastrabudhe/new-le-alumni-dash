@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect, useNavigate, useRouterState } from '@tanstack/react-router'
 import { useEffect } from 'react'
 import AppSidebar from '@/components/app/AppSidebar'
 import TopNav from '@/components/app/TopNav'
@@ -14,9 +14,19 @@ export const Route = createFileRoute('/_app')({
 })
 
 function AppLayout() {
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
   const navigate = useNavigate()
+  const pathname = useRouterState({ select: (state) => state.location.pathname })
   const sessionCheck = trpc.user.me.useQuery(undefined, { retry: false })
+  const { data: sections } = trpc.settings.list.useQuery(undefined, { retry: false })
+  const currentSection = pathname.startsWith('/directory') ? 'directory'
+    : pathname.startsWith('/jobs') ? 'jobs'
+      : pathname.startsWith('/events') ? 'events'
+        : pathname.startsWith('/mentorship') ? 'mentorship'
+          : null
+  const sectionIsHidden = user?.role !== 'admin' && currentSection
+    ? !(sections?.find((section) => section.key === currentSection)?.isVisible ?? currentSection !== 'jobs')
+    : false
 
   useEffect(() => {
     const sessionIsInvalid =
@@ -27,6 +37,10 @@ function AppLayout() {
     void navigate({ to: '/login', replace: true })
   }, [logout, navigate, sessionCheck.data, sessionCheck.error, sessionCheck.isSuccess])
 
+  useEffect(() => {
+    if (sectionIsHidden) void navigate({ to: '/dashboard', replace: true })
+  }, [navigate, sectionIsHidden])
+
   return (
     <div className="dark min-h-screen flex bg-background text-foreground">
       <div className="le-atmosphere" aria-hidden="true" />
@@ -35,7 +49,7 @@ function AppLayout() {
       <div className="flex-1 flex flex-col min-w-0 relative z-10">
         <TopNav />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 xl:p-10 overflow-x-hidden">
-          <Outlet />
+          {!sectionIsHidden && <Outlet />}
         </main>
       </div>
     </div>

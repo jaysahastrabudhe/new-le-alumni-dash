@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Bell, LogOut, Menu, Search, X } from 'lucide-react'
 import { useAuth } from '@/context/auth'
 import { BrandLogo } from '@/components/brand-logo'
+import { trpc } from '@/lib/trpc'
 
 const crumbs: Record<string, string> = {
   '/dashboard': 'Dashboard',
@@ -17,10 +18,10 @@ const crumbs: Record<string, string> = {
 
 const mobileLinks = [
   { to: '/dashboard', label: 'Dashboard' },
-  { to: '/directory', label: 'Directory' },
-  { to: '/jobs', label: 'Jobs' },
-  { to: '/events', label: 'Events' },
-  { to: '/mentorship', label: 'Mentorship' },
+  { to: '/directory', label: 'Directory', section: 'directory' },
+  { to: '/jobs', label: 'Jobs', section: 'jobs' },
+  { to: '/events', label: 'Events', section: 'events' },
+  { to: '/mentorship', label: 'Mentorship', section: 'mentorship' },
   { to: '/profile', label: 'Profile' },
 ] as const
 
@@ -28,8 +29,13 @@ export default function TopNav() {
   const { pathname } = useRouterState({ select: (state) => state.location })
   const title = crumbs[pathname] ?? 'LE Alumni'
   const { user, logout } = useAuth()
+  const { data: sections } = trpc.settings.list.useQuery()
   const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
+  const visibleMobileLinks = mobileLinks.filter((item) => {
+    if (!('section' in item) || user?.role === 'admin') return true
+    return sections?.find((section) => section.key === item.section)?.isVisible ?? item.section !== 'jobs'
+  })
 
   const handleLogout = () => {
     logout()
@@ -87,7 +93,7 @@ export default function TopNav() {
             </button>
           </div>
           <nav className="space-y-2">
-            {mobileLinks.map((item) => (
+            {visibleMobileLinks.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
