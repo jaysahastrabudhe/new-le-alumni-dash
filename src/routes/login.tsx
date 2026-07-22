@@ -1,4 +1,5 @@
 import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router'
+import { useQueryClient } from '@tanstack/react-query'
 import { animate } from 'animejs'
 import { ArrowLeft, ArrowRight, Network, ShieldCheck, Sparkles } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
@@ -21,15 +22,15 @@ function LoginPage() {
   const cardRef = useRef<HTMLDivElement>(null)
   const { login } = useAuth()
   const navigate = useNavigate()
-  const utils = trpc.useUtils()
+  const queryClient = useQueryClient()
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [form, setForm] = useState({ name: '', email: '', password: '' })
   const [error, setError] = useState<string | null>(null)
   const [showResetHelp, setShowResetHelp] = useState(false)
 
   const loginMutation = trpc.auth.login.useMutation({
-    onSuccess: async ({ token, user }) => {
-      await utils.user.me.reset()
+    onSuccess: ({ token, user }) => {
+      queryClient.clear()
       login(token, user)
       void navigate({ to: '/dashboard' })
     },
@@ -37,8 +38,8 @@ function LoginPage() {
   })
 
   const registerMutation = trpc.auth.register.useMutation({
-    onSuccess: async ({ token, user }) => {
-      await utils.user.me.reset()
+    onSuccess: ({ token, user }) => {
+      queryClient.clear()
       login(token, user)
       void navigate({ to: '/dashboard' })
     },
