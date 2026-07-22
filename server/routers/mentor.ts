@@ -67,7 +67,7 @@ export const mentorRouter = router({
             location: mentor.location || null,
             linkedinUrl: mentor.linkedinUrl || null,
             avatarUrl: mentor.avatarUrl || null,
-            visibility: 'members',
+            visibility: mentor.category === 'lets_enterprise_mentor' ? 'hidden' : 'members',
             isVerified: true,
           })
           .onConflictDoUpdate({
