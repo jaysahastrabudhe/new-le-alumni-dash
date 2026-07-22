@@ -346,3 +346,7 @@ export const CATEGORY_LABELS: Record<AlumniCategory, string> = {
   placed: 'Placed',
   higher_studies: 'Higher Studies',
 }
+
+export const ALUMNI_STORY_ARTWORK: Record<string, string> = Object.fromEntries(
+  ALUMNI.map((alumni) => [alumni.id, `/alumni-stories/${alumni.id}.svg`]),
+)

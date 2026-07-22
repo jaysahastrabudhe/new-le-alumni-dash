@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { animate, stagger } from 'animejs'
-import { Building2, Briefcase, GraduationCap, Sparkles, MapPin, ArrowRight, Search, UsersRound } from 'lucide-react'
+import { Building2, Briefcase, GraduationCap, Sparkles, MapPin, ArrowRight, Search, UsersRound, Maximize2 } from 'lucide-react'
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import {
   ALUMNI,
+  ALUMNI_STORY_ARTWORK,
   BATCH_YEARS,
   CATEGORY_LABELS,
   type AlumniCategory,
@@ -34,99 +36,71 @@ const ACTIVE_FILTER_STYLE: Record<AlumniCategory | 'all', string> = {
   higher_studies: 'bg-violet-400/20 text-violet-400 border-violet-400/40',
 }
 
-function avatarGradient(hue: string) {
-  return `linear-gradient(135deg, oklch(0.35 0.18 ${hue}) 0%, oklch(0.20 0.12 ${hue}) 100%)`
-}
-
 function AlumniCard({ alumni }: { alumni: ShowcaseAlumni }) {
-  const { name, bio, company, role, category, location, avatarHue, avatarUrl } = alumni
-  const initials = name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase()
+  const { name, bio, company, role, category, location, batchYear } = alumni
   const CategoryIcon = CATEGORY_ICONS[category]
+  const artworkUrl = ALUMNI_STORY_ARTWORK[alumni.id]
 
   return (
-    <div
-      className="alumni-card group relative rounded-[1.4rem] p-5 flex flex-col gap-4 overflow-hidden le-surface"
-      style={{
-        background: 'linear-gradient(145deg, oklch(0.155 0.035 275), oklch(0.125 0.03 275))',
-        border: '1px solid oklch(1 0 0 / 0.08)',
-        transition: 'transform 200ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-2px)'
-        e.currentTarget.style.borderColor = 'oklch(0.77 0.14 188 / 0.40)'
-        e.currentTarget.style.boxShadow = '0 8px 32px oklch(0 0 0 / 0.40)'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = ''
-        e.currentTarget.style.borderColor = 'oklch(1 0 0 / 0.08)'
-        e.currentTarget.style.boxShadow = ''
-      }}
-    >
-      {/* Left accent bar */}
-      <div
-        className="absolute left-0 top-4 bottom-4 w-[3px] rounded-r-full pointer-events-none origin-center scale-y-0 group-hover:scale-y-100 transition-transform duration-200 ease-out"
-        style={{ background: 'oklch(0.77 0.14 188)' }}
-      />
-
-      {/* Header: avatar + identity block */}
-      <div className="flex items-start gap-3.5">
-        <div
-          className="h-[72px] w-[72px] rounded-2xl shrink-0 overflow-hidden ring-1 ring-white/10 shadow-lg"
-          style={{ background: avatarGradient(avatarHue) }}
+    <Dialog>
+      <DialogTrigger asChild>
+        <button
+          type="button"
+          className="alumni-card group w-full overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.035] text-left shadow-[0_18px_55px_oklch(0_0_0_/_0.24)] transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/45 hover:shadow-[0_24px_70px_oklch(0_0_0_/_0.42)] le-focus-ring"
+          aria-label={`Open ${name}'s alumni story`}
         >
-          {avatarUrl ? (
+          <div className="relative aspect-[1190/1684] overflow-hidden bg-black">
             <img
-              src={avatarUrl}
-              alt={name}
-              className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.04]"
+              src={artworkUrl}
+              alt={`${name} — ${company}`}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.018]"
             />
-          ) : (
-            <div className="h-full w-full flex items-center justify-center font-display font-extrabold text-white/90 text-xl">
-              {initials}
+            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black via-black/45 to-transparent px-4 pb-4 pt-16 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+              <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white">View full story</span>
+              <Maximize2 className="h-4 w-4 text-accent" />
             </div>
-          )}
+            <span className="absolute right-3 top-3 rounded-full border border-white/15 bg-black/55 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.14em] text-white/80 backdrop-blur-md">
+              {batchYear}
+            </span>
+          </div>
+
+          <div className="space-y-3 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-display text-base font-extrabold leading-tight text-foreground">{name}</p>
+                <p className="mt-1 truncate text-[11px] font-semibold text-accent">{role ?? company}</p>
+              </div>
+              <CategoryIcon className="mt-0.5 h-4 w-4 shrink-0 text-primary/70" />
+            </div>
+            <p className="sr-only">{bio}</p>
+            <div className="flex items-center justify-between gap-2">
+              {location ? (
+                <span className="flex min-w-0 items-center gap-1 text-[10px] text-muted-foreground/60">
+                  <MapPin className="h-2.5 w-2.5 shrink-0" />
+                  <span className="truncate">{location}</span>
+                </span>
+              ) : <span />}
+              <span className={`shrink-0 rounded-full border px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] ${CATEGORY_CHIP_STYLE[category]}`}>
+                {CATEGORY_LABELS[category]}
+              </span>
+            </div>
+          </div>
+        </button>
+      </DialogTrigger>
+
+      <DialogContent className="dark w-[min(94vw,52rem)] max-w-none border-white/10 bg-black/95 p-2 text-white shadow-2xl sm:p-3">
+        <DialogTitle className="sr-only">{name}'s alumni story</DialogTitle>
+        <div className="flex max-h-[91vh] items-center justify-center overflow-auto rounded-xl bg-black">
+          <img
+            src={artworkUrl}
+            alt={`${name}'s full alumni story`}
+            className="block max-h-[88vh] w-auto max-w-full object-contain"
+          />
         </div>
-
-        <div className="min-w-0 flex-1 pt-1">
-          <p className="font-display font-extrabold text-[15px] text-foreground leading-tight">{name}</p>
-          <p className="text-[11px] font-semibold mt-1 text-accent leading-tight truncate">{company}</p>
-          {role && <p className="text-[10px] text-muted-foreground/55 mt-0.5 truncate">{role}</p>}
-        </div>
-
-        <CategoryIcon
-          className={`h-3.5 w-3.5 shrink-0 mt-1.5 ${
-            category === 'founder'
-              ? 'text-accent/50'
-              : category === 'placed'
-              ? 'text-primary/50'
-              : 'text-violet-400/50'
-          }`}
-        />
-      </div>
-
-      {/* Bio */}
-      <p className="text-xs text-muted-foreground/70 leading-relaxed line-clamp-3 flex-1">{bio}</p>
-
-      {/* Footer: location + category chip */}
-      <div className="flex items-center justify-between gap-2">
-        {location ? (
-          <span className="flex items-center gap-1 text-[10px] text-muted-foreground/35">
-            <MapPin className="h-2.5 w-2.5" />
-            {location}
-          </span>
-        ) : <span />}
-        <span
-          className={`text-[9px] font-semibold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full border ${CATEGORY_CHIP_STYLE[category]}`}
-        >
-          {CATEGORY_LABELS[category]}
-        </span>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }
 
