@@ -1,4 +1,4 @@
-import type { IncomingMessage } from 'http'
+import type { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { neon } from '@neondatabase/serverless'
 import { drizzle } from 'drizzle-orm/neon-http'
 import jwt from 'jsonwebtoken'
@@ -17,10 +17,18 @@ export type Context = {
   db: ReturnType<typeof makeDb>
 }
 
-export async function createContext({ req }: { req: IncomingMessage }): Promise<Context> {
+type ContextRequest = IncomingMessage | Request | { headers: IncomingHttpHeaders | Headers }
+
+function getAuthorizationHeader(req: ContextRequest) {
+  if (req.headers instanceof Headers) return req.headers.get('authorization') ?? ''
+  const header = req.headers.authorization
+  return Array.isArray(header) ? header[0] ?? '' : header ?? ''
+}
+
+export async function createContext({ req }: { req: ContextRequest }): Promise<Context> {
   const db = makeDb(process.env.DATABASE_URL!)
 
-  const authHeader = req.headers.authorization ?? ''
+  const authHeader = getAuthorizationHeader(req)
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
 
   if (!token) return { userId: null, role: null, db }

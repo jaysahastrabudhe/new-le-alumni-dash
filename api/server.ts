@@ -1,20 +1,46 @@
-import express, { type Request, type Response, type NextFunction } from 'express'
-import cors from 'cors'
-import { createExpressMiddleware } from '@trpc/server/adapters/express'
+import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
 import { appRouter } from '../server/routers/_app'
 import { createContext } from '../server/context'
 
-const app = express()
+const corsHeaders = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-methods': 'GET, POST, OPTIONS',
+  'access-control-allow-headers': 'Content-Type, Authorization',
+}
 
-app.use(cors({ origin: true, credentials: true }))
-app.use(express.json())
-app.use('/api/trpc', createExpressMiddleware({ router: appRouter, createContext }))
+function withCors(response: Response) {
+  const headers = new Headers(response.headers)
+  for (const [name, value] of Object.entries(corsHeaders)) headers.set(name, value)
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  })
+}
 
-// Catch-all: ensure errors always return JSON so the client doesn't get HTML
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
-  console.error(err)
-  res.status(500).json({ error: 'Internal server error' })
-})
+export default {
+  async fetch(request: Request) {
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: corsHeaders })
+    }
 
-export default app
+    try {
+      const response = await fetchRequestHandler({
+        endpoint: '/api/trpc',
+        req: request,
+        router: appRouter,
+        createContext: () => createContext({ req: request }),
+        onError: ({ error, path }) => {
+          console.error(`tRPC error on ${path ?? 'unknown path'}:`, error)
+        },
+      })
+      return withCors(response)
+    } catch (error) {
+      console.error('Unhandled API error:', error)
+      return new Response(JSON.stringify({ error: 'Internal server error' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'content-type': 'application/json' },
+      })
+    }
+  },
+}
