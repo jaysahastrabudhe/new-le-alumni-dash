@@ -1,4 +1,4 @@
-import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import { animate } from 'animejs'
 import { ArrowLeft, ArrowRight, Network, ShieldCheck, Sparkles } from 'lucide-react'
@@ -21,7 +21,6 @@ export const Route = createFileRoute('/login')({
 function LoginPage() {
   const cardRef = useRef<HTMLDivElement>(null)
   const { login } = useAuth()
-  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [form, setForm] = useState({ name: '', email: '', password: '' })
@@ -32,7 +31,7 @@ function LoginPage() {
     onSuccess: ({ token, user }) => {
       queryClient.clear()
       login(token, user)
-      void navigate({ to: '/dashboard' })
+      window.location.assign('/dashboard')
     },
     onError: (e) => setError(e.message),
   })
@@ -41,7 +40,7 @@ function LoginPage() {
     onSuccess: ({ token, user }) => {
       queryClient.clear()
       login(token, user)
-      void navigate({ to: '/dashboard' })
+      window.location.assign('/dashboard')
     },
     onError: (e) => setError(e.message),
   })
