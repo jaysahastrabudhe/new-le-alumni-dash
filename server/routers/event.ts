@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { router, protectedProcedure, adminProcedure, publicProcedure } from '../trpc'
-import { events, eventRsvps } from '../../db/schema'
+import { router, protectedProcedure, adminProcedure, publicProcedure } from '../trpc.js'
+import { events, eventRsvps } from '../../db/schema.js'
 import { desc } from 'drizzle-orm'
 
 export const eventRouter = router({

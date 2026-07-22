@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import { randomBytes } from 'crypto'
-import { router, protectedProcedure, adminProcedure, publicProcedure } from '../trpc'
-import { users, careerEntries, jobs, events, mentorProfiles } from '../../db/schema'
+import { router, protectedProcedure, adminProcedure, publicProcedure } from '../trpc.js'
+import { users, careerEntries, jobs, events, mentorProfiles } from '../../db/schema.js'
 import { eq, ilike, inArray, and, desc, count, gte, sql } from 'drizzle-orm'
 
 const visibleProfileLevels = (role: string | null): Array<'public' | 'members'> =>

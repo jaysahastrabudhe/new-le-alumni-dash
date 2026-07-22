@@ -2,8 +2,8 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import { createExpressMiddleware } from '@trpc/server/adapters/express'
-import { appRouter } from './routers/_app'
-import { createContext } from './context'
+import { appRouter } from './routers/_app.js'
+import { createContext } from './context.js'
 
 const app = express()
 

@@ -2,8 +2,8 @@ import type { IncomingHttpHeaders, IncomingMessage } from 'http'
 import { neon } from '@neondatabase/serverless'
 import { drizzle } from 'drizzle-orm/neon-http'
 import jwt from 'jsonwebtoken'
-import * as schema from '../db/schema'
-import * as relations from '../db/relations'
+import * as schema from '../db/schema.js'
+import * as relations from '../db/relations.js'
 
 const mergedSchema = { ...schema, ...relations }
 

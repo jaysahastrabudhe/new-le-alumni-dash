@@ -1,6 +1,6 @@
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
-import { appRouter } from '../server/routers/_app'
-import { createContext } from '../server/context'
+import { appRouter } from '../server/routers/_app.js'
+import { createContext } from '../server/context.js'
 
 const corsHeaders = {
   'access-control-allow-origin': '*',

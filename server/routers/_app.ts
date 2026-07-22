@@ -1,9 +1,9 @@
-import { router } from '../trpc'
-import { authRouter } from './auth'
-import { userRouter } from './user'
-import { jobRouter } from './job'
-import { eventRouter } from './event'
-import { mentorRouter } from './mentor'
+import { router } from '../trpc.js'
+import { authRouter } from './auth.js'
+import { userRouter } from './user.js'
+import { jobRouter } from './job.js'
+import { eventRouter } from './event.js'
+import { mentorRouter } from './mentor.js'
 
 export const appRouter = router({
   auth: authRouter,

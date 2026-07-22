@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { router, publicProcedure, protectedProcedure } from '../trpc'
-import { users } from '../../db/schema'
+import { router, publicProcedure, protectedProcedure } from '../trpc.js'
+import { users } from '../../db/schema.js'
 import { eq, sql } from 'drizzle-orm'
 import { TRPCError } from '@trpc/server'
 

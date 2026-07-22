@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { users, careerEntries, jobs, events, eventRsvps, mentorProfiles, mentorships } from './schema'
+import { users, careerEntries, jobs, events, eventRsvps, mentorProfiles, mentorships } from './schema.js'
 
 export const usersRelations = relations(users, ({ many, one }) => ({
   careerEntries: many(careerEntries),

@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { router, protectedProcedure, publicProcedure } from '../trpc'
-import { mentorProfiles, mentorships } from '../../db/schema'
+import { router, protectedProcedure, publicProcedure } from '../trpc.js'
+import { mentorProfiles, mentorships } from '../../db/schema.js'
 import { eq, desc } from 'drizzle-orm'
 
 export const mentorRouter = router({

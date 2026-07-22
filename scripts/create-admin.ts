@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { neon } from '@neondatabase/serverless'
 import { drizzle } from 'drizzle-orm/neon-http'
 import { eq, sql } from 'drizzle-orm'
-import { users } from '../db/schema'
+import { users } from '../db/schema.js'
 
 const email = process.env.ADMIN_EMAIL?.trim().toLowerCase()
 const name = process.env.ADMIN_NAME?.trim() || 'LE Administrator'
