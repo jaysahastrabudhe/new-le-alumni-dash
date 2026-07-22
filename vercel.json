@@ -1,5 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/trpc/:path*", "destination": "/api/server" }
+    { "source": "/api/trpc/:path*", "destination": "/api/server" },
+    { "source": "/:path*", "destination": "/index.html" }
   ]
 }
