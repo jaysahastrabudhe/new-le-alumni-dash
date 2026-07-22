@@ -36,6 +36,10 @@ const ACTIVE_FILTER_STYLE: Record<AlumniCategory | 'all', string> = {
   higher_studies: 'bg-violet-400/20 text-violet-400 border-violet-400/40',
 }
 
+const CARD_PORTRAIT_POSITION: Partial<Record<string, string>> = {
+  'anish-kale': 'center 10%',
+}
+
 function AlumniCard({ alumni }: { alumni: ShowcaseAlumni }) {
   const { name, bio, company, role, category, location, batchYear } = alumni
   const CategoryIcon = CATEGORY_ICONS[category]
@@ -56,6 +60,7 @@ function AlumniCard({ alumni }: { alumni: ShowcaseAlumni }) {
               loading="lazy"
               decoding="async"
               className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.045]"
+              style={{ objectPosition: CARD_PORTRAIT_POSITION[alumni.id] ?? 'center' }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20" />
             <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.13em] text-white/90 backdrop-blur-md">
