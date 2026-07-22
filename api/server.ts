@@ -20,6 +20,22 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders })
     }
 
+    const missingConfig = ['DATABASE_URL', 'JWT_SECRET'].filter((name) => !process.env[name])
+    if (missingConfig.length > 0) {
+      console.error(`Missing required server configuration: ${missingConfig.join(', ')}`)
+      return new Response(
+        JSON.stringify({
+          error: 'Server configuration is incomplete',
+          code: 'MISSING_SERVER_CONFIG',
+          missing: missingConfig,
+        }),
+        {
+          status: 503,
+          headers: { ...corsHeaders, 'content-type': 'application/json' },
+        },
+      )
+    }
+
     try {
       // Load the API tree inside the request boundary. If a deployment-specific
       // dependency or environment issue occurs, Vercel can still return JSON
