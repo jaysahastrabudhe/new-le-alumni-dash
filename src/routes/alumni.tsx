@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { animate, stagger } from 'animejs'
-import { Building2, Briefcase, GraduationCap, Sparkles, MapPin, ArrowRight } from 'lucide-react'
+import { Building2, Briefcase, GraduationCap, Sparkles, MapPin, ArrowRight, Search, UsersRound } from 'lucide-react'
 import {
   ALUMNI,
   BATCH_YEARS,
@@ -50,10 +50,10 @@ function AlumniCard({ alumni }: { alumni: ShowcaseAlumni }) {
 
   return (
     <div
-      className="alumni-card group relative rounded-2xl p-5 flex flex-col gap-4 opacity-0 overflow-hidden"
+      className="alumni-card group relative rounded-[1.4rem] p-5 flex flex-col gap-4 overflow-hidden le-surface"
       style={{
-        background: 'oklch(0.13 0.035 284)',
-        border: '1px solid oklch(0.22 0.05 284)',
+        background: 'linear-gradient(145deg, oklch(0.155 0.035 275), oklch(0.125 0.03 275))',
+        border: '1px solid oklch(1 0 0 / 0.08)',
         transition: 'transform 200ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out',
       }}
       onMouseEnter={(e) => {
@@ -63,7 +63,7 @@ function AlumniCard({ alumni }: { alumni: ShowcaseAlumni }) {
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = ''
-        e.currentTarget.style.borderColor = 'oklch(0.22 0.05 284)'
+        e.currentTarget.style.borderColor = 'oklch(1 0 0 / 0.08)'
         e.currentTarget.style.boxShadow = ''
       }}
     >
@@ -76,7 +76,7 @@ function AlumniCard({ alumni }: { alumni: ShowcaseAlumni }) {
       {/* Header: avatar + identity block */}
       <div className="flex items-start gap-3.5">
         <div
-          className="h-[72px] w-[72px] rounded-xl shrink-0 overflow-hidden"
+          className="h-[72px] w-[72px] rounded-2xl shrink-0 overflow-hidden ring-1 ring-white/10 shadow-lg"
           style={{ background: avatarGradient(avatarHue) }}
         >
           {avatarUrl ? (
@@ -168,12 +168,18 @@ const ALL_CATEGORIES: AlumniCategory[] = ['founder', 'placed', 'higher_studies']
 function PublicAlumniPage() {
   const [activeBatch, setActiveBatch] = useState<BatchYear>(2023)
   const [activeCategory, setActiveCategory] = useState<AlumniCategory | 'all'>('all')
+  const [search, setSearch] = useState('')
   const gridRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
 
-  const filtered = ALUMNI.filter(
-    (a) => a.batchYear === activeBatch && (activeCategory === 'all' || a.category === activeCategory),
-  )
+  const normalizedSearch = search.trim().toLowerCase()
+  const filtered = ALUMNI.filter((alumni) => {
+    const matchesBatch = alumni.batchYear === activeBatch
+    const matchesCategory = activeCategory === 'all' || alumni.category === activeCategory
+    const matchesSearch = !normalizedSearch || [alumni.name, alumni.company, alumni.role, alumni.location]
+      .some((value) => value?.toLowerCase().includes(normalizedSearch))
+    return matchesBatch && matchesCategory && matchesSearch
+  })
 
   const animateCardsIn = useCallback(() => {
     if (!gridRef.current) return
@@ -193,12 +199,13 @@ function PublicAlumniPage() {
     if (year === activeBatch) return
     setActiveBatch(year)
     setActiveCategory('all')
+    setSearch('')
   }
 
   const batchCounts = BATCH_YEARS.map((y) => ({ year: y, count: ALUMNI.filter((a) => a.batchYear === y).length }))
 
   return (
-    <div className="dark min-h-screen bg-background text-foreground">
+    <div className="dark min-h-screen bg-background text-foreground relative overflow-hidden">
       {/* Atmosphere */}
       <div
         className="pointer-events-none fixed inset-0"
@@ -208,11 +215,13 @@ function PublicAlumniPage() {
             'radial-gradient(ellipse 70% 50% at 50% -5%, oklch(0.47 0.22 257 / 0.15) 0%, transparent 65%), radial-gradient(ellipse 40% 35% at 85% 85%, oklch(0.77 0.14 188 / 0.08) 0%, transparent 60%)',
         }}
       />
+      <div className="le-page-grid pointer-events-none fixed inset-0" aria-hidden="true" />
 
       {/* Nav */}
-      <header className="relative z-10 flex items-center justify-between px-6 lg:px-12 py-5 border-b border-border/20">
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="h-7 w-7 rounded-lg bg-accent/20 border border-accent/30 flex items-center justify-center flex-shrink-0">
+      <header className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-5">
+        <div className="le-glass flex items-center justify-between px-4 sm:px-5 py-3 rounded-2xl">
+        <Link to="/" className="flex items-center gap-2.5 le-focus-ring rounded-xl">
+          <div className="h-9 w-9 rounded-xl bg-accent/15 border border-accent/25 flex items-center justify-center flex-shrink-0">
             <span className="text-[10px] font-extrabold text-accent font-display tracking-tight">LE</span>
           </div>
           <div className="min-w-0">
@@ -222,44 +231,46 @@ function PublicAlumniPage() {
         </Link>
         <Link
           to="/login"
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 active:scale-[0.97]"
-          style={{
-            background: 'oklch(0.47 0.22 257 / 0.12)',
-            border: '1px solid oklch(0.47 0.22 257 / 0.25)',
-            color: 'oklch(0.77 0.18 240)',
-          }}
+          className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold bg-white text-slate-950 hover:bg-accent transition-all duration-150 active:scale-[0.97] le-focus-ring"
         >
           Login to Network
           <ArrowRight className="h-3.5 w-3.5" />
         </Link>
+        </div>
       </header>
 
       {/* Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 lg:px-8 py-10 space-y-7">
+      <div className="relative z-10 max-w-6xl mx-auto px-5 sm:px-8 lg:px-12 py-14 lg:py-20 space-y-8">
         {/* Header */}
-        <div ref={headerRef} className="space-y-1">
-          <p className="text-[10px] font-semibold text-accent tracking-[0.22em] uppercase opacity-0">
-            Let's Enterprise · Pune
-          </p>
-          <h1 className="le-headline font-display text-4xl font-extrabold leading-none opacity-0">
-            Know Your <span>Alumni</span>
-          </h1>
-          <p className="text-muted-foreground text-sm max-w-md leading-relaxed pt-1 opacity-0">
-            From founders to consultants to global scholars — meet the people who made it happen.
-          </p>
+        <div ref={headerRef} className="grid lg:grid-cols-[1fr_auto] gap-8 items-end">
+          <div>
+            <p className="le-kicker">The people behind the progress</p>
+            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-[-0.055em] leading-[0.96] mt-5">
+              Know your <span className="le-gradient-text">alumni.</span>
+            </h1>
+            <p className="text-muted-foreground text-sm sm:text-base max-w-xl leading-relaxed mt-5">
+              Founders, operators, consultants, and global scholars. Explore the stories still unfolding beyond the LE classroom.
+            </p>
+          </div>
+          <div className="le-glass rounded-2xl p-4 flex items-center gap-4 min-w-[210px]">
+            <div className="h-11 w-11 rounded-xl bg-accent/10 border border-accent/15 grid place-items-center">
+              <UsersRound className="h-5 w-5 text-accent" />
+            </div>
+            <div>
+              <p className="text-2xl font-extrabold leading-none">{ALUMNI.length}</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-[0.14em] mt-1.5">Stories featured</p>
+            </div>
+          </div>
         </div>
 
-        {/* Batch tabs */}
-        <div
-          className="flex items-center gap-1 p-1 rounded-xl w-fit"
-          style={{ background: 'oklch(1 0 0 / 0.04)', backdropFilter: 'blur(8px)', border: '1px solid oklch(1 0 0 / 0.08)' }}
-        >
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-2">
+        <div className="flex items-center gap-1 p-1.5 rounded-2xl w-full lg:w-fit overflow-x-auto le-glass">
           {batchCounts.map(({ year, count }) => (
             <button
               key={year}
               onClick={() => handleBatchChange(year as BatchYear)}
-              className={`relative px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                activeBatch === year ? 'bg-accent/20 text-accent border border-accent/30' : 'text-muted-foreground hover:text-foreground'
+              className={`relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 shrink-0 le-focus-ring ${
+                activeBatch === year ? 'bg-white text-slate-950 shadow-lg' : 'text-muted-foreground hover:text-foreground hover:bg-white/[0.04]'
               }`}
             >
               {year}
@@ -270,15 +281,26 @@ function PublicAlumniPage() {
             </button>
           ))}
         </div>
+        <label className="relative block w-full lg:w-[300px]">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search this cohort"
+            className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.04] pl-10 pr-4 text-sm placeholder:text-muted-foreground/45 focus:outline-none focus:border-accent/45 focus:ring-2 focus:ring-accent/10 transition-all"
+          />
+        </label>
+        </div>
 
         {activeBatch === 2026 ? (
           <Batch2026Placeholder />
         ) : (
           <>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap pt-1">
               <button
                 onClick={() => setActiveCategory('all')}
-                className={`rounded-full px-3.5 py-1 text-xs font-medium border transition-colors ${
+                className={`rounded-full px-4 py-2 text-xs font-semibold border transition-colors le-focus-ring ${
                   activeCategory === 'all' ? ACTIVE_FILTER_STYLE['all'] : 'border-border/50 text-muted-foreground hover:border-border hover:text-foreground'
                 }`}
               >
@@ -290,7 +312,7 @@ function PublicAlumniPage() {
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
-                    className={`rounded-full px-3.5 py-1 text-xs font-medium border transition-colors flex items-center gap-1.5 ${
+                    className={`rounded-full px-4 py-2 text-xs font-semibold border transition-colors flex items-center gap-1.5 le-focus-ring ${
                       activeCategory === cat ? ACTIVE_FILTER_STYLE[cat] : 'border-border/50 text-muted-foreground hover:border-border hover:text-foreground'
                     }`}
                   >
@@ -301,17 +323,17 @@ function PublicAlumniPage() {
               })}
             </div>
 
-            <p className="text-[10px] text-muted-foreground/40 uppercase tracking-[0.12em] font-semibold">
-              {filtered.length} {filtered.length === 1 ? 'alumnus' : 'alumni'}
+            <p className="text-[10px] text-muted-foreground/55 uppercase tracking-[0.14em] font-semibold">
+              Showing {filtered.length} {filtered.length === 1 ? 'alumnus' : 'alumni'} · Batch {activeBatch}
             </p>
 
-            <div ref={gridRef} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div ref={gridRef} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5" aria-live="polite">
               {filtered.map((a) => (
                 <AlumniCard key={a.id} alumni={a} />
               ))}
               {filtered.length === 0 && (
                 <p className="col-span-3 text-center text-muted-foreground/50 py-16 text-sm">
-                  No alumni in this category for Batch {activeBatch}.
+                  No alumni match these filters for Batch {activeBatch}.
                 </p>
               )}
             </div>
@@ -320,10 +342,9 @@ function PublicAlumniPage() {
 
         {/* Login CTA strip */}
         <div
-          className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl px-6 py-5"
+          className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-5 rounded-[1.5rem] px-6 sm:px-8 py-6 le-glass"
           style={{
-            background: 'oklch(1 0 0 / 0.03)',
-            border: '1px solid oklch(1 0 0 / 0.08)',
+            background: 'linear-gradient(110deg, oklch(0.63 0.20 255 / 0.14), oklch(0.79 0.14 188 / 0.06))',
           }}
         >
           <div>

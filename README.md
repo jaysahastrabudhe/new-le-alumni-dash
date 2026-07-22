@@ -1,4 +1,45 @@
-# React + TypeScript + Vite
+# Let's Enterprise Alumni Network
+
+## Admin setup
+
+Admin access is enforced by the API through the `adminProcedure` guard. A user must have `role = 'admin'` in the database; changing browser storage cannot grant API access.
+
+Create a new admin or promote an existing member with the one-time bootstrap command:
+
+```powershell
+$env:ADMIN_EMAIL='admin@example.com'
+$env:ADMIN_NAME='LE Administrator'
+$env:ADMIN_PASSWORD='use-a-strong-password'
+npm run admin:create
+```
+
+If the email already exists, the account is promoted and verified. If it does not exist, a new hidden admin profile is created. Remove the temporary shell variables after running the command.
+
+The admin member screen supports CSV imports with these columns:
+
+```text
+name,email,role,batchYear,company,location,headline,visibility,isVerified,temporaryPassword
+```
+
+Only `name` and `email` are required. Imports are limited to 100 rows. Missing passwords are generated and displayed once after creation.
+
+## Password management
+
+- Members can change their password from **My Profile**. This revokes every existing session.
+- Admins can issue a generated or custom temporary password from **Admin → Members**. This also revokes existing sessions.
+- Email-based reset links are not enabled because the project does not currently have an email delivery provider.
+
+## Development
+
+```bash
+npm install
+npm run db:push
+npm run dev
+```
+
+The frontend runs on `http://localhost:5173` and the API on `http://localhost:3001`.
+
+## Original Vite notes
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 

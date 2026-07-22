@@ -4,6 +4,7 @@ import { sql } from 'drizzle-orm'
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   passwordHash: text('password_hash'),
+  sessionVersion: integer('session_version').default(0).notNull(),
   role: text('role', { enum: ['student', 'alumni', 'admin'] }).default('student').notNull(),
   name: text('name').notNull(),
   email: text('email').unique().notNull(),

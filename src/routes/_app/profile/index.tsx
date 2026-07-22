@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState, useRef } from 'react'
 import { useAuth } from '@/context/auth'
 import { trpc } from '@/lib/trpc'
@@ -9,17 +9,24 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Camera } from 'lucide-react'
+import { Camera, KeyRound } from 'lucide-react'
 
 export const Route = createFileRoute('/_app/profile/')({
   component: ProfilePage,
 })
 
 function ProfilePage() {
-  const { user: authUser } = useAuth()
+  const { user: authUser, logout } = useAuth()
+  const navigate = useNavigate()
   const { data: me, isLoading, refetch } = trpc.user.me.useQuery()
   const updateMutation = trpc.user.update.useMutation({ onSuccess: () => refetch() })
   const addCareerMutation = trpc.user.addCareerEntry.useMutation({ onSuccess: () => refetch() })
+  const changePasswordMutation = trpc.auth.changePassword.useMutation({
+    onSuccess: () => {
+      logout()
+      void navigate({ to: '/login', replace: true })
+    },
+  })
 
   const [editing, setEditing] = useState(false)
   const [form, setForm] = useState({ name: '', headline: '', bio: '', location: '', company: '', linkedinUrl: '', visibility: 'members' as 'public' | 'members' | 'hidden' })
@@ -76,6 +83,7 @@ function ProfilePage() {
   }
 
   const [newEntry, setNewEntry] = useState({ company: '', title: '', startDate: '', isCurrent: false })
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
 
   if (isLoading) return <div className="space-y-4 max-w-xl mx-auto"><Skeleton className="h-48 rounded-xl" /><Skeleton className="h-32 rounded-xl" /></div>
 
@@ -195,6 +203,87 @@ function ProfilePage() {
             </div>
           </form>
         )}
+      </div>
+
+      {/* Security */}
+      <div className="rounded-[1.4rem] border border-white/[0.08] bg-card/80 p-6 le-surface">
+        <div className="flex items-start gap-3 mb-5">
+          <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary grid place-items-center shrink-0">
+            <KeyRound className="h-4 w-4" />
+          </div>
+          <div>
+            <h2 className="font-bold">Password and security</h2>
+            <p className="text-xs text-muted-foreground mt-1">Changing your password signs out every active session.</p>
+          </div>
+        </div>
+        <form
+          className="space-y-4"
+          onSubmit={(event) => {
+            event.preventDefault()
+            if (passwordForm.newPassword !== passwordForm.confirmPassword) return
+            changePasswordMutation.mutate({
+              currentPassword: passwordForm.currentPassword,
+              newPassword: passwordForm.newPassword,
+            })
+          }}
+        >
+          <div className="space-y-2">
+            <Label htmlFor="current-password">Current password</Label>
+            <Input
+              id="current-password"
+              type="password"
+              autoComplete="current-password"
+              value={passwordForm.currentPassword}
+              onChange={(event) => setPasswordForm((form) => ({ ...form, currentPassword: event.target.value }))}
+              required
+            />
+          </div>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="new-password">New password</Label>
+              <Input
+                id="new-password"
+                type="password"
+                autoComplete="new-password"
+                minLength={8}
+                maxLength={72}
+                value={passwordForm.newPassword}
+                onChange={(event) => setPasswordForm((form) => ({ ...form, newPassword: event.target.value }))}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirm-password">Confirm new password</Label>
+              <Input
+                id="confirm-password"
+                type="password"
+                autoComplete="new-password"
+                minLength={8}
+                maxLength={72}
+                value={passwordForm.confirmPassword}
+                onChange={(event) => setPasswordForm((form) => ({ ...form, confirmPassword: event.target.value }))}
+                required
+              />
+            </div>
+          </div>
+          {passwordForm.confirmPassword && passwordForm.newPassword !== passwordForm.confirmPassword && (
+            <p role="alert" className="text-xs text-red-300">New passwords do not match.</p>
+          )}
+          {changePasswordMutation.error && (
+            <p role="alert" className="text-xs text-red-300">{changePasswordMutation.error.message}</p>
+          )}
+          <Button
+            type="submit"
+            variant="outline"
+            disabled={
+              changePasswordMutation.isPending ||
+              passwordForm.newPassword.length < 8 ||
+              passwordForm.newPassword !== passwordForm.confirmPassword
+            }
+          >
+            {changePasswordMutation.isPending ? 'Updating…' : 'Update password'}
+          </Button>
+        </form>
       </div>
 
       {/* Career */}

@@ -1,12 +1,13 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
+import {
+  clearStoredSession,
+  readStoredSession,
+  writeStoredSession,
+  type StoredAuthUser,
+  type StoredSession,
+} from '@/lib/auth-storage'
 
-export type AuthUser = {
-  id: string
-  name: string
-  email: string
-  role: 'student' | 'alumni' | 'admin'
-  avatarUrl?: string | null
-}
+export type AuthUser = StoredAuthUser
 
 type AuthContextValue = {
   user: AuthUser | null
@@ -17,32 +18,28 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-const TOKEN_KEY = 'le_token'
-const USER_KEY = 'le_user'
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY))
-  const [user, setUser] = useState<AuthUser | null>(() => {
-    const stored = localStorage.getItem(USER_KEY)
-    return stored ? (JSON.parse(stored) as AuthUser) : null
-  })
+  const [session, setSession] = useState<StoredSession | null>(readStoredSession)
 
   const login = useCallback((newToken: string, newUser: AuthUser) => {
-    localStorage.setItem(TOKEN_KEY, newToken)
-    localStorage.setItem(USER_KEY, JSON.stringify(newUser))
-    setToken(newToken)
-    setUser(newUser)
+    const nextSession = { token: newToken, user: newUser }
+    writeStoredSession(nextSession)
+    setSession(nextSession)
   }, [])
 
   const logout = useCallback(() => {
-    localStorage.removeItem(TOKEN_KEY)
-    localStorage.removeItem(USER_KEY)
-    setToken(null)
-    setUser(null)
+    clearStoredSession()
+    setSession(null)
+  }, [])
+
+  useEffect(() => {
+    const syncSession = () => setSession(readStoredSession())
+    window.addEventListener('storage', syncSession)
+    return () => window.removeEventListener('storage', syncSession)
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user: session?.user ?? null, token: session?.token ?? null, login, logout }}>
       {children}
     </AuthContext.Provider>
   )

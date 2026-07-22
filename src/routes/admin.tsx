@@ -1,6 +1,12 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { readStoredSession } from '@/lib/auth-storage'
 
 export const Route = createFileRoute('/admin')({
+  beforeLoad: () => {
+    const session = readStoredSession()
+    if (!session) throw redirect({ to: '/login' })
+    if (session.user.role !== 'admin') throw redirect({ to: '/dashboard' })
+  },
   component: AdminLayout,
 })
 

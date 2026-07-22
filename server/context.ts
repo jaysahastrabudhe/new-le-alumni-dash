@@ -26,10 +26,21 @@ export async function createContext({ req }: { req: IncomingMessage }): Promise<
   if (!token) return { userId: null, role: null, db }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET!) as { sub: string; role: string }
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as { sub?: unknown; sv?: unknown }
+    if (typeof payload.sub !== 'string') {
+      return { userId: null, role: null, db }
+    }
+
+    const user = await db.query.users.findFirst({
+      where: (u, { eq }) => eq(u.id, payload.sub as string),
+      columns: { role: true, sessionVersion: true },
+    })
+    const tokenVersion = typeof payload.sv === 'number' ? payload.sv : 0
+    if (!user || user.sessionVersion !== tokenVersion) return { userId: null, role: null, db }
+
     return {
       userId: payload.sub,
-      role: payload.role as 'student' | 'alumni' | 'admin',
+      role: user.role,
       db,
     }
   } catch {

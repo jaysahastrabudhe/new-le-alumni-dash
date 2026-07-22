@@ -1,7 +1,16 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
 import { animate, stagger } from 'animejs'
-import { ArrowRight, Users, Briefcase, GraduationCap, Building2 } from 'lucide-react'
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Briefcase,
+  Building2,
+  GraduationCap,
+  Sparkles,
+  Users,
+} from 'lucide-react'
+import { ALUMNI } from '@/data/alumni-showcase'
 
 export const Route = createFileRoute('/')({
   component: WelcomePage,
@@ -14,161 +23,190 @@ const STATS = [
   { icon: GraduationCap, value: '4', label: 'Cohorts' },
 ]
 
+const FEATURED = [ALUMNI[17], ALUMNI[0], ALUMNI[22]]
+
+function initials(name: string) {
+  return name.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase()
+}
+
+function Brand() {
+  return (
+    <Link to="/" className="flex items-center gap-3 le-focus-ring rounded-xl">
+      <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-accent/25 to-primary/20 border border-accent/25 flex items-center justify-center shadow-[inset_0_1px_0_oklch(1_0_0_/_0.15)]">
+        <span className="text-xs font-extrabold text-accent tracking-tight">LE</span>
+      </div>
+      <div>
+        <p className="text-sm font-extrabold text-foreground leading-none">Let's Enterprise</p>
+        <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-[0.19em] mt-1">Alumni Network</p>
+      </div>
+    </Link>
+  )
+}
+
 function WelcomePage() {
   const heroRef = useRef<HTMLDivElement>(null)
-  const statsRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (heroRef.current) {
       animate(Array.from(heroRef.current.children) as HTMLElement[], {
         opacity: [0, 1],
-        translateY: [24, 0],
-        delay: stagger(90),
-        duration: 600,
+        translateY: [22, 0],
+        delay: stagger(75),
+        duration: 650,
         ease: 'outExpo',
       })
     }
-    if (statsRef.current) {
-      animate(Array.from(statsRef.current.children) as HTMLElement[], {
+    if (panelRef.current) {
+      animate(panelRef.current, {
         opacity: [0, 1],
-        translateY: [12, 0],
-        delay: stagger(60, { start: 400 }),
-        duration: 500,
+        translateX: [30, 0],
+        rotate: [1.5, 0],
+        duration: 800,
+        delay: 180,
         ease: 'outExpo',
       })
     }
   }, [])
 
   return (
-    <div className="dark min-h-screen bg-background text-foreground flex flex-col overflow-hidden relative">
-      {/* Atmosphere */}
-      <div
-        className="pointer-events-none fixed inset-0"
-        aria-hidden="true"
-        style={{
-          background:
-            'radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.47 0.22 257 / 0.18) 0%, transparent 65%), radial-gradient(ellipse 50% 40% at 80% 80%, oklch(0.77 0.14 188 / 0.10) 0%, transparent 60%)',
-        }}
-      />
+    <div className="dark min-h-screen bg-background text-foreground overflow-hidden relative">
+      <div className="le-atmosphere" aria-hidden="true" />
+      <div className="le-page-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
 
-      {/* Nav */}
-      <header className="relative z-10 flex items-center justify-between px-6 lg:px-12 pt-6">
-        <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-xl bg-accent/20 border border-accent/30 flex items-center justify-center flex-shrink-0">
-            <span className="text-[11px] font-extrabold text-accent font-display tracking-tight">LE</span>
-          </div>
-          <div className="min-w-0">
-            <p className="text-sm font-extrabold font-display text-foreground leading-none">Let's Enterprise</p>
-            <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-[0.18em] mt-0.5">Alumni Network</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link
-            to="/alumni"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium hidden sm:block"
-          >
-            Meet Alumni
-          </Link>
-          <Link
-            to="/login"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-150 active:scale-[0.97]"
-            style={{
-              background: 'oklch(0.47 0.22 257 / 0.15)',
-              border: '1px solid oklch(0.47 0.22 257 / 0.30)',
-              color: 'oklch(0.77 0.18 240)',
-            }}
-          >
-            Login
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
-      </header>
-
-      {/* Hero */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 py-20 lg:py-32">
-        <div ref={heroRef} className="max-w-2xl mx-auto space-y-6">
-          <p className="text-[10px] font-semibold text-accent tracking-[0.28em] uppercase opacity-0">
-            Let's Enterprise · Pune
-          </p>
-
-          <h1
-            className="font-display font-extrabold leading-[1.05] opacity-0"
-            style={{ fontSize: 'clamp(2.6rem, 7vw, 5rem)' }}
-          >
-            Meet the people{' '}
-            <span
-              style={{
-                background: 'linear-gradient(135deg, oklch(0.77 0.14 188) 0%, oklch(0.60 0.18 220) 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            >
-              who made it.
-            </span>
-          </h1>
-
-          <p className="text-muted-foreground text-base lg:text-lg leading-relaxed max-w-lg mx-auto opacity-0">
-            The Let's Enterprise alumni network — founders, engineers, consultants, and scholars who started here in Pune and built remarkable things.
-          </p>
-
-          <div className="flex items-center justify-center gap-3 flex-wrap opacity-0">
+      <header className="relative z-20 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-5">
+        <div className="le-glass rounded-2xl px-4 sm:px-5 py-3 flex items-center justify-between">
+          <Brand />
+          <nav className="flex items-center gap-1 sm:gap-2">
             <Link
               to="/alumni"
-              className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-150 active:scale-[0.97]"
-              style={{
-                background: 'oklch(0.77 0.14 188 / 0.15)',
-                border: '1px solid oklch(0.77 0.14 188 / 0.30)',
-                color: 'oklch(0.77 0.14 188)',
-              }}
+              className="hidden sm:inline-flex px-4 py-2.5 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-white/[0.05] transition-all le-focus-ring"
             >
-              Browse Alumni
-              <ArrowRight className="h-3.5 w-3.5" />
+              Explore alumni
             </Link>
             <Link
               to="/login"
-              className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm text-foreground/70 hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-white text-slate-950 hover:bg-accent transition-all active:scale-[0.98] le-focus-ring"
             >
-              Login to your account
+              Member login <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
+          </nav>
+        </div>
+      </header>
+
+      <main className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-12 lg:pt-20 pb-16">
+        <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-center">
+          <div ref={heroRef} className="max-w-2xl">
+            <div className="le-kicker">Built in Pune · Growing everywhere</div>
+            <h1 className="mt-6 font-extrabold tracking-[-0.055em] leading-[0.96] text-[clamp(3.25rem,7vw,6.8rem)]">
+              Where your
+              <span className="block le-gradient-text">next chapter</span>
+              finds its people.
+            </h1>
+            <p className="mt-7 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl">
+              A lifelong network for the founders, builders, consultants, and scholars who began at Let's Enterprise.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <Link
+                to="/alumni"
+                className="group inline-flex items-center gap-2.5 h-12 px-6 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-[0_12px_40px_oklch(0.79_0.14_188_/_0.20)] hover:-translate-y-0.5 hover:shadow-[0_16px_45px_oklch(0.79_0.14_188_/_0.28)] transition-all le-focus-ring"
+              >
+                Meet the community
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+              <Link
+                to="/login"
+                className="inline-flex items-center h-12 px-5 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors le-focus-ring"
+              >
+                Access member space
+              </Link>
+            </div>
+
+            <div className="mt-11 flex items-center gap-4">
+              <div className="flex -space-x-2">
+                {FEATURED.map((person, index) => (
+                  <div
+                    key={person.id}
+                    className="h-9 w-9 rounded-full border-2 border-background grid place-items-center text-[9px] font-extrabold text-white"
+                    style={{ background: `oklch(${0.42 + index * 0.04} 0.15 ${person.avatarHue})` }}
+                  >
+                    {initials(person.name)}
+                  </div>
+                ))}
+              </div>
+              <div className="h-8 w-px bg-border" />
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                <span className="text-foreground font-bold">120+ members</span><br />building, hiring, and helping.
+              </p>
+            </div>
+          </div>
+
+          <div ref={panelRef} className="relative lg:pl-6">
+            <div className="absolute -inset-12 bg-accent/[0.07] blur-3xl rounded-full pointer-events-none" />
+            <div className="le-glass relative rounded-[2rem] p-3 sm:p-4">
+              <div className="rounded-[1.45rem] border border-white/[0.07] bg-background/75 p-5 sm:p-6 overflow-hidden">
+                <div className="flex items-center justify-between mb-7">
+                  <div>
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-semibold">Community pulse</p>
+                    <h2 className="text-lg font-extrabold mt-1">People making moves</h2>
+                  </div>
+                  <div className="h-9 w-9 rounded-full bg-accent/10 border border-accent/20 grid place-items-center">
+                    <Sparkles className="h-4 w-4 text-accent" />
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {FEATURED.map((person, index) => (
+                    <div
+                      key={person.id}
+                      className="group rounded-2xl border border-white/[0.07] bg-white/[0.035] p-4 flex items-center gap-4 hover:border-accent/25 hover:bg-white/[0.06] transition-all"
+                    >
+                      <div
+                        className="h-12 w-12 rounded-xl grid place-items-center font-extrabold text-sm text-white shrink-0 shadow-lg"
+                        style={{ background: `linear-gradient(145deg, oklch(0.48 0.18 ${person.avatarHue}), oklch(0.25 0.12 ${person.avatarHue}))` }}
+                      >
+                        {initials(person.name)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold truncate">{person.name}</p>
+                        <p className="text-xs text-muted-foreground truncate mt-0.5">{person.role ?? person.company}</p>
+                      </div>
+                      <span className="text-[9px] uppercase tracking-[0.14em] font-bold text-accent/80 px-2.5 py-1 rounded-full border border-accent/15 bg-accent/[0.07]">
+                        {index === 0 ? 'Global' : person.category === 'founder' ? 'Founder' : 'Alumni'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-5 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/[0.08] border border-primary/20 p-5 flex items-end justify-between gap-4">
+                  <div>
+                    <p className="text-3xl font-extrabold tracking-tight">4 cohorts.</p>
+                    <p className="text-sm text-muted-foreground mt-1">One compounding network.</p>
+                  </div>
+                  <ArrowUpRight className="h-5 w-5 text-accent shrink-0" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Stats */}
-        <div
-          ref={statsRef}
-          className="mt-20 grid grid-cols-2 sm:grid-cols-4 gap-px max-w-2xl w-full mx-auto"
-          style={{
-            background: 'oklch(1 0 0 / 0.06)',
-            border: '1px solid oklch(1 0 0 / 0.08)',
-            borderRadius: '16px',
-            overflow: 'hidden',
-          }}
-        >
-          {STATS.map(({ icon: Icon, value, label }) => (
-            <div
-              key={label}
-              className="flex flex-col items-center justify-center gap-1.5 py-6 px-4 opacity-0"
-              style={{ background: 'oklch(1 0 0 / 0.025)' }}
-            >
-              <Icon className="h-4 w-4 text-accent/60 mb-0.5" />
-              <p className="font-display font-extrabold text-2xl text-foreground leading-none">{value}</p>
-              <p className="text-[10px] font-semibold text-muted-foreground/60 uppercase tracking-[0.14em]">{label}</p>
+        <div className="mt-20 lg:mt-28 grid grid-cols-2 lg:grid-cols-4 border-y border-white/[0.08]">
+          {STATS.map(({ icon: Icon, value, label }, index) => (
+            <div key={label} className={`py-6 sm:py-8 px-4 sm:px-6 ${index % 2 ? 'border-l border-white/[0.08]' : ''} ${index > 1 ? 'border-t lg:border-t-0 border-white/[0.08]' : ''} lg:border-l lg:first:border-l-0`}>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Icon className="h-3.5 w-3.5 text-accent/70" />
+                <span className="text-[10px] uppercase tracking-[0.16em] font-semibold">{label}</span>
+              </div>
+              <p className="text-3xl sm:text-4xl font-extrabold tracking-tight mt-3">{value}</p>
             </div>
           ))}
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 px-6 lg:px-12 pb-6 flex items-center justify-between">
-        <p className="text-[10px] text-muted-foreground/30 font-medium">
-          © 2024 Let's Enterprise · Pune
-        </p>
-        <Link
-          to="/login"
-          className="text-[10px] text-muted-foreground/40 hover:text-muted-foreground transition-colors font-medium"
-        >
-          Member login →
-        </Link>
+      <footer className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pb-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[10px] text-muted-foreground/55">
+        <p>© {new Date().getFullYear()} Let's Enterprise · Pune</p>
+        <p className="uppercase tracking-[0.16em]">Built for the people who make it happen</p>
       </footer>
     </div>
   )

@@ -48,28 +48,28 @@
   --border: oklch(0.92 0.013 255);
   --input: oklch(0.92 0.013 255);
   --ring: oklch(0.47 0.22 257);
-  --radius: 0.5rem;
+  --radius: 0.875rem;
 }
 
 .dark {
-  --background: oklch(0.11 0.14 284);
+  --background: oklch(0.095 0.035 275);
   --foreground: oklch(0.97 0.002 248);
-  --card: oklch(0.14 0.12 284);
+  --card: oklch(0.14 0.035 275);
   --card-foreground: oklch(0.97 0.002 248);
-  --popover: oklch(0.13 0.13 284);
+  --popover: oklch(0.13 0.04 275);
   --popover-foreground: oklch(0.97 0.002 248);
-  --primary: oklch(0.58 0.22 257);
+  --primary: oklch(0.63 0.20 255);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.17 0.10 284);
+  --secondary: oklch(0.18 0.035 275);
   --secondary-foreground: oklch(0.97 0.002 248);
-  --muted: oklch(0.17 0.10 284);
-  --muted-foreground: oklch(0.65 0.05 284);
-  --accent: oklch(0.77 0.14 188);
-  --accent-foreground: oklch(0.11 0.14 284);
+  --muted: oklch(0.18 0.03 275);
+  --muted-foreground: oklch(0.70 0.025 275);
+  --accent: oklch(0.79 0.14 188);
+  --accent-foreground: oklch(0.10 0.04 275);
   --destructive: oklch(0.704 0.191 22);
-  --border: oklch(0.21 0.10 284);
-  --input: oklch(0.21 0.10 284);
-  --ring: oklch(0.58 0.22 257);
+  --border: oklch(0.24 0.035 275);
+  --input: oklch(0.24 0.035 275);
+  --ring: oklch(0.79 0.14 188);
 }
 
 @font-face {
@@ -115,11 +115,17 @@
     color: var(--foreground);
     font-family: 'Prompt', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
+    min-width: 320px;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Prompt', system-ui, sans-serif;
     font-weight: 800;
   }
+}
+
+::selection {
+  color: oklch(0.10 0.04 275);
+  background: oklch(0.79 0.14 188 / 0.85);
 }
 
 /* LE signature span-accent headline */
@@ -132,7 +138,52 @@
 
 /* Elevated card with inner top-edge shimmer */
 .le-surface {
-  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.07);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.07), 0 24px 80px oklch(0 0 0 / 0.14);
+}
+
+.le-glass {
+  background: linear-gradient(145deg, oklch(1 0 0 / 0.075), oklch(1 0 0 / 0.025));
+  border: 1px solid oklch(1 0 0 / 0.10);
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.08), 0 24px 80px oklch(0 0 0 / 0.20);
+  backdrop-filter: blur(20px);
+}
+
+.le-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--accent);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.le-kicker::before {
+  content: '';
+  width: 1.75rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent));
+}
+
+.le-page-grid {
+  background-image:
+    linear-gradient(oklch(1 0 0 / 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(1 0 0 / 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, black, transparent 78%);
+}
+
+.le-gradient-text {
+  color: transparent;
+  background: linear-gradient(115deg, oklch(0.92 0.04 190), oklch(0.79 0.14 188) 40%, oklch(0.68 0.18 245));
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.le-focus-ring:focus-visible {
+  outline: 2px solid oklch(0.79 0.14 188 / 0.9);
+  outline-offset: 3px;
 }
 
 /* Page-level atmospheric glow */
@@ -150,7 +201,7 @@
   width: 700px;
   height: 700px;
   border-radius: 9999px;
-  background: radial-gradient(circle, oklch(0.30 0.14 284 / 0.20) 0%, transparent 60%);
+  background: radial-gradient(circle, oklch(0.42 0.18 275 / 0.18) 0%, transparent 62%);
 }
 .le-atmosphere::after {
   content: '';
@@ -160,7 +211,7 @@
   width: 500px;
   height: 500px;
   border-radius: 9999px;
-  background: radial-gradient(circle, oklch(0.77 0.14 188 / 0.06) 0%, transparent 60%);
+  background: radial-gradient(circle, oklch(0.79 0.14 188 / 0.08) 0%, transparent 62%);
 }
 
 /* Active nav indicator — teal icon, no filled pill */
@@ -170,4 +221,13 @@
 }
 .le-nav-active svg {
   color: oklch(0.77 0.14 188);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

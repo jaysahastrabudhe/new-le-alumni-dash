@@ -25,22 +25,23 @@ export default function AppSidebar() {
   const { user } = useAuth()
 
   return (
-    <aside className="hidden lg:flex flex-col w-[220px] min-h-screen bg-card le-surface border-r border-border/40 relative z-20">
+    <aside className="hidden lg:flex flex-col w-[248px] min-h-screen bg-card/80 backdrop-blur-xl border-r border-white/[0.07] relative z-20">
       {/* Brand */}
-      <div className="px-4 pt-5 pb-4 border-b border-border/30">
+      <div className="px-5 pt-5 pb-5 border-b border-white/[0.06]">
         <div className="flex items-center gap-2.5">
-          <div className="h-7 w-7 rounded-lg bg-accent/20 border border-accent/30 flex items-center justify-center flex-shrink-0">
-            <span className="text-[10px] font-extrabold text-accent font-display tracking-tight">LE</span>
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-accent/20 to-primary/20 border border-accent/20 flex items-center justify-center flex-shrink-0 shadow-[inset_0_1px_0_oklch(1_0_0_/_0.12)]">
+            <span className="text-[11px] font-extrabold text-accent font-display tracking-tight">LE</span>
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-extrabold font-display text-foreground leading-none">Let's Enterprise</p>
+            <p className="text-sm font-extrabold font-display text-foreground leading-none tracking-tight">Let's Enterprise</p>
             <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-[0.18em] mt-0.5">Alumni Network</p>
           </div>
         </div>
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-2 py-3 space-y-0.5">
+      <nav className="flex-1 px-3 py-5 space-y-1">
+        <p className="px-3 mb-3 text-[9px] font-bold uppercase tracking-[0.18em] text-muted-foreground/45">Member space</p>
         {navItems.map(({ to, icon: Icon, label }) => {
           const isActive = pathname === to || pathname.startsWith(to + '/')
           return (
@@ -48,13 +49,15 @@ export default function AppSidebar() {
               key={to}
               to={to}
               className={cn(
-                'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150',
+                'group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 le-focus-ring',
                 isActive
-                  ? 'le-nav-active'
+                  ? 'bg-white/[0.07] text-foreground shadow-[inset_0_1px_0_oklch(1_0_0_/_0.06)]'
                   : 'text-muted-foreground hover:bg-white/[0.05] hover:text-foreground',
               )}
             >
-              <Icon className="h-4 w-4 shrink-0" />
+              <span className={cn('h-8 w-8 rounded-lg grid place-items-center transition-colors', isActive ? 'bg-accent/10 text-accent' : 'bg-white/[0.025] group-hover:bg-white/[0.05]')}>
+                <Icon className="h-4 w-4 shrink-0" />
+              </span>
               {label}
             </Link>
           )
@@ -63,10 +66,10 @@ export default function AppSidebar() {
 
       {/* Admin */}
       {user?.role === 'admin' && (
-        <div className="px-2 pb-2 border-t border-border/30 pt-2">
+        <div className="px-3 pb-3 border-t border-white/[0.06] pt-3">
           <Link
             to="/admin/members"
-            className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-white/[0.05] hover:text-foreground transition-all"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-muted-foreground hover:bg-white/[0.05] hover:text-foreground transition-all"
           >
             <ShieldCheck className="h-4 w-4 shrink-0" />
             Admin
@@ -75,11 +78,11 @@ export default function AppSidebar() {
       )}
 
       {/* User chip */}
-      <div className="px-3 py-3 border-t border-border/30 flex items-center gap-2.5">
+      <div className="m-3 px-3 py-3 rounded-2xl border border-white/[0.07] bg-white/[0.03] flex items-center gap-3">
         {user?.avatarUrl ? (
-          <img src={user.avatarUrl} alt={user.name} className="h-7 w-7 rounded-full object-cover flex-shrink-0 ring-1 ring-accent/30" />
+          <img src={user.avatarUrl} alt={user.name} className="h-9 w-9 rounded-xl object-cover flex-shrink-0 ring-1 ring-accent/30" />
         ) : (
-          <div className="h-7 w-7 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-primary/25 to-accent/10 flex items-center justify-center flex-shrink-0 border border-white/[0.06]">
             <span className="text-[10px] font-bold text-primary">
               {user?.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
             </span>
