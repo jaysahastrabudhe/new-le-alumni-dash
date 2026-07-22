@@ -347,6 +347,9 @@ export const CATEGORY_LABELS: Record<AlumniCategory, string> = {
   higher_studies: 'Higher Studies',
 }
 
-export const ALUMNI_STORY_ARTWORK: Record<string, string> = Object.fromEntries(
-  ALUMNI.map((alumni) => [alumni.id, `/alumni-stories/${alumni.id}.svg`]),
+export const ALUMNI_PORTRAITS: Record<string, string> = Object.fromEntries(
+  ALUMNI.map((alumni) => [
+    alumni.id,
+    `/alumni-portraits/${alumni.id}.${alumni.id === 'shivam-mistry' ? 'png' : 'jpg'}`,
+  ]),
 )

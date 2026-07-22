@@ -10,7 +10,7 @@ import {
   Sparkles,
   Users,
 } from 'lucide-react'
-import { ALUMNI } from '@/data/alumni-showcase'
+import { ALUMNI, ALUMNI_PORTRAITS } from '@/data/alumni-showcase'
 
 export const Route = createFileRoute('/')({
   component: WelcomePage,
@@ -24,10 +24,6 @@ const STATS = [
 ]
 
 const FEATURED = [ALUMNI[17], ALUMNI[0], ALUMNI[22]]
-
-function initials(name: string) {
-  return name.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase()
-}
 
 function Brand() {
   return (
@@ -125,13 +121,12 @@ function WelcomePage() {
 
             <div className="mt-11 flex items-center gap-4">
               <div className="flex -space-x-2">
-                {FEATURED.map((person, index) => (
+                {FEATURED.map((person) => (
                   <div
                     key={person.id}
-                    className="h-9 w-9 rounded-full border-2 border-background grid place-items-center text-[9px] font-extrabold text-white"
-                    style={{ background: `oklch(${0.42 + index * 0.04} 0.15 ${person.avatarHue})` }}
+                    className="h-9 w-9 overflow-hidden rounded-full border-2 border-background bg-muted"
                   >
-                    {initials(person.name)}
+                    <img src={ALUMNI_PORTRAITS[person.id]} alt="" className="h-full w-full object-cover" />
                   </div>
                 ))}
               </div>
@@ -163,10 +158,9 @@ function WelcomePage() {
                       className="group rounded-2xl border border-white/[0.07] bg-white/[0.035] p-4 flex items-center gap-4 hover:border-accent/25 hover:bg-white/[0.06] transition-all"
                     >
                       <div
-                        className="h-12 w-12 rounded-xl grid place-items-center font-extrabold text-sm text-white shrink-0 shadow-lg"
-                        style={{ background: `linear-gradient(145deg, oklch(0.48 0.18 ${person.avatarHue}), oklch(0.25 0.12 ${person.avatarHue}))` }}
+                        className="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-muted shadow-lg"
                       >
-                        {initials(person.name)}
+                        <img src={ALUMNI_PORTRAITS[person.id]} alt="" className="h-full w-full object-cover" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-bold truncate">{person.name}</p>

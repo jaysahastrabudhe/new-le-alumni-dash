@@ -5,7 +5,7 @@ import { Building2, Briefcase, GraduationCap, Sparkles, MapPin, ArrowRight, Sear
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import {
   ALUMNI,
-  ALUMNI_STORY_ARTWORK,
+  ALUMNI_PORTRAITS,
   BATCH_YEARS,
   CATEGORY_LABELS,
   type AlumniCategory,
@@ -39,65 +39,90 @@ const ACTIVE_FILTER_STYLE: Record<AlumniCategory | 'all', string> = {
 function AlumniCard({ alumni }: { alumni: ShowcaseAlumni }) {
   const { name, bio, company, role, category, location, batchYear } = alumni
   const CategoryIcon = CATEGORY_ICONS[category]
-  const artworkUrl = ALUMNI_STORY_ARTWORK[alumni.id]
+  const portraitUrl = ALUMNI_PORTRAITS[alumni.id]
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <button
           type="button"
-          className="alumni-card group w-full overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.035] text-left shadow-[0_18px_55px_oklch(0_0_0_/_0.24)] transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/45 hover:shadow-[0_24px_70px_oklch(0_0_0_/_0.42)] le-focus-ring"
+          className="alumni-card group w-full overflow-hidden rounded-[1.6rem] border border-white/10 bg-[linear-gradient(145deg,oklch(0.17_0.035_275),oklch(0.125_0.025_275))] text-left shadow-[0_18px_55px_oklch(0_0_0_/_0.24)] transition-all duration-300 hover:-translate-y-1.5 hover:border-accent/35 hover:shadow-[0_26px_70px_oklch(0_0_0_/_0.42)] le-focus-ring"
           aria-label={`Open ${name}'s alumni story`}
         >
-          <div className="relative aspect-[1190/1684] overflow-hidden bg-black">
+          <div className="relative aspect-[5/4] overflow-hidden bg-slate-950">
             <img
-              src={artworkUrl}
+              src={portraitUrl}
               alt={`${name} — ${company}`}
               loading="lazy"
               decoding="async"
-              className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.018]"
+              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.045]"
             />
-            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black via-black/45 to-transparent px-4 pb-4 pt-16 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
-              <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white">View full story</span>
-              <Maximize2 className="h-4 w-4 text-accent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20" />
+            <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full border border-white/15 bg-black/40 px-2.5 py-1.5 text-[9px] font-bold uppercase tracking-[0.13em] text-white/90 backdrop-blur-md">
+              <CategoryIcon className="h-3 w-3 text-accent" />
+              {CATEGORY_LABELS[category]}
             </div>
             <span className="absolute right-3 top-3 rounded-full border border-white/15 bg-black/55 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.14em] text-white/80 backdrop-blur-md">
               {batchYear}
             </span>
+            <div className="absolute inset-x-0 bottom-0 px-5 pb-4 pt-16">
+              <p className="font-display text-2xl font-extrabold leading-none tracking-[-0.03em] text-white">{name}</p>
+              <p className="mt-1.5 truncate text-[11px] font-semibold text-accent">{role ?? company}</p>
+            </div>
           </div>
 
-          <div className="space-y-3 p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <p className="font-display text-base font-extrabold leading-tight text-foreground">{name}</p>
-                <p className="mt-1 truncate text-[11px] font-semibold text-accent">{role ?? company}</p>
-              </div>
-              <CategoryIcon className="mt-0.5 h-4 w-4 shrink-0 text-primary/70" />
-            </div>
-            <p className="sr-only">{bio}</p>
-            <div className="flex items-center justify-between gap-2">
+          <div className="space-y-4 p-5">
+            {role && <p className="truncate text-[10px] font-semibold uppercase tracking-[0.13em] text-muted-foreground/60">{company}</p>}
+            <p className="line-clamp-4 text-xs leading-relaxed text-muted-foreground/75">{bio}</p>
+            <div className="flex items-center justify-between gap-3 border-t border-white/[0.07] pt-4">
               {location ? (
                 <span className="flex min-w-0 items-center gap-1 text-[10px] text-muted-foreground/60">
                   <MapPin className="h-2.5 w-2.5 shrink-0" />
                   <span className="truncate">{location}</span>
                 </span>
               ) : <span />}
-              <span className={`shrink-0 rounded-full border px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] ${CATEGORY_CHIP_STYLE[category]}`}>
-                {CATEGORY_LABELS[category]}
+              <span className="flex shrink-0 items-center gap-1.5 text-[10px] font-bold text-accent transition-transform group-hover:translate-x-0.5">
+                Read story
+                <Maximize2 className="h-3 w-3" />
               </span>
             </div>
           </div>
         </button>
       </DialogTrigger>
 
-      <DialogContent className="dark w-[min(94vw,52rem)] max-w-none border-white/10 bg-black/95 p-2 text-white shadow-2xl sm:p-3">
-        <DialogTitle className="sr-only">{name}'s alumni story</DialogTitle>
-        <div className="flex max-h-[91vh] items-center justify-center overflow-auto rounded-xl bg-black">
-          <img
-            src={artworkUrl}
-            alt={`${name}'s full alumni story`}
-            className="block max-h-[88vh] w-auto max-w-full object-contain"
-          />
+      <DialogContent className="dark w-[min(94vw,58rem)] max-w-none overflow-hidden border-white/10 bg-[oklch(0.115_0.025_275)] p-0 text-white shadow-2xl">
+        <div className="grid max-h-[90vh] overflow-auto md:grid-cols-[0.9fr_1.1fr]">
+          <div className="relative min-h-[320px] overflow-hidden bg-slate-950 md:min-h-[620px]">
+            <img src={portraitUrl} alt={name} className="absolute inset-0 h-full w-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+            <span className="absolute bottom-5 left-5 rounded-full border border-white/15 bg-black/35 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.16em] text-white/90 backdrop-blur-md">
+              LE Alumni · {batchYear}
+            </span>
+          </div>
+          <div className="flex flex-col justify-center p-6 sm:p-9 lg:p-11">
+            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.17em] text-accent">
+              <CategoryIcon className="h-3.5 w-3.5" />
+              {CATEGORY_LABELS[category]}
+            </div>
+            <DialogTitle className="mt-5 font-display text-4xl font-extrabold leading-[0.95] tracking-[-0.045em] text-white sm:text-5xl">
+              {name}
+            </DialogTitle>
+            <p className="mt-4 text-sm font-semibold text-accent">{role ?? company}</p>
+            {role && <p className="mt-1 text-xs text-muted-foreground">{company}</p>}
+            <div className="my-7 h-px bg-gradient-to-r from-accent/40 via-white/10 to-transparent" />
+            <p className="text-sm leading-7 text-white/70">{bio}</p>
+            <div className="mt-8 flex flex-wrap gap-2">
+              {location && (
+                <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-[10px] text-white/65">
+                  <MapPin className="h-3 w-3 text-accent" />
+                  {location}
+                </span>
+              )}
+              <span className={`rounded-full border px-3 py-2 text-[9px] font-semibold uppercase tracking-[0.12em] ${CATEGORY_CHIP_STYLE[category]}`}>
+                Batch {batchYear}
+              </span>
+            </div>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
