@@ -75,7 +75,6 @@ function MentorshipPage() {
   const [category, setCategory] = useState<MentorCategory | 'all'>('all')
   const [topic, setTopic] = useState('')
   const [note, setNote] = useState('')
-  const gridRef = useEntranceAnimation([])
 
   const { data: mentors, isLoading } = trpc.mentor.list.useQuery(undefined)
   const { data: mine } = trpc.mentor.mine.useQuery(undefined)
@@ -83,6 +82,7 @@ function MentorshipPage() {
     onSuccess: () => { setSelectedMentor(null); setTopic(''); setNote('') },
   })
   const filteredMentors = mentors?.filter((mentor) => category === 'all' || mentor.category === category)
+  const gridRef = useEntranceAnimation([category, filteredMentors?.length ?? 0])
 
   return (
     <div className="space-y-7 max-w-[1440px] mx-auto">
@@ -131,7 +131,7 @@ function MentorshipPage() {
           ) : (
             <div ref={gridRef as React.RefObject<HTMLDivElement>} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredMentors?.map((m: { userId: string; user: { id: string; name: string; headline?: string | null; company?: string | null; avatarUrl?: string | null; batchYear?: number | null }; topics: string[]; category: MentorCategory; isAvailable: boolean; capacity: number }) => (
-                <div key={m.userId} className="opacity-0">
+                <div key={m.userId}>
                   <MentorCard {...m} onRequest={setSelectedMentor} />
                 </div>
               ))}
