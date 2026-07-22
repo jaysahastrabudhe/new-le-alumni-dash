@@ -11,6 +11,7 @@ import {
   Users,
 } from 'lucide-react'
 import { ALUMNI, ALUMNI_PORTRAITS } from '@/data/alumni-showcase'
+import { BrandLogo } from '@/components/brand-logo'
 
 export const Route = createFileRoute('/')({
   component: WelcomePage,
@@ -27,14 +28,8 @@ const FEATURED = [ALUMNI[17], ALUMNI[0], ALUMNI[22]]
 
 function Brand() {
   return (
-    <Link to="/" className="flex items-center gap-3 le-focus-ring rounded-xl">
-      <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-accent/25 to-primary/20 border border-accent/25 flex items-center justify-center shadow-[inset_0_1px_0_oklch(1_0_0_/_0.15)]">
-        <span className="text-xs font-extrabold text-accent tracking-tight">LE</span>
-      </div>
-      <div>
-        <p className="text-sm font-extrabold text-foreground leading-none">Let's Enterprise</p>
-        <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-[0.19em] mt-1">Alumni Network</p>
-      </div>
+    <Link to="/" className="le-focus-ring rounded-xl">
+      <BrandLogo />
     </Link>
   )
 }
@@ -71,8 +66,8 @@ function WelcomePage() {
       <div className="le-page-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
 
-      <header className="relative z-20 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-5">
-        <div className="le-glass rounded-2xl px-4 sm:px-5 py-3 flex items-center justify-between">
+      <header className="relative z-20 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-3 lg:py-4">
+        <div className="le-glass rounded-2xl px-4 sm:px-5 py-2.5 flex items-center justify-between">
           <Brand />
           <nav className="flex items-center gap-1 sm:gap-2">
             <Link
@@ -91,19 +86,19 @@ function WelcomePage() {
         </div>
       </header>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-12 lg:pt-20 pb-16">
-        <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-16 items-center">
+      <main className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-9 pb-12 lg:min-h-[calc(100svh-88px)] lg:flex lg:flex-col lg:justify-center lg:py-5">
+        <div className="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-12 items-center">
           <div ref={heroRef} className="max-w-2xl">
             <div className="le-kicker">Built in Pune · Growing everywhere</div>
-            <h1 className="mt-6 font-extrabold tracking-[-0.055em] leading-[0.96] text-[clamp(3.25rem,7vw,6.8rem)]">
+            <h1 className="mt-4 lg:mt-5 font-extrabold tracking-[-0.055em] leading-[0.94] text-[clamp(3.15rem,5.5vw,5.65rem)]">
               Where your
               <span className="block le-gradient-text">next chapter</span>
               finds its people.
             </h1>
-            <p className="mt-7 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl">
+            <p className="mt-5 lg:mt-6 text-base lg:text-[1.05rem] text-muted-foreground leading-relaxed max-w-xl">
               A lifelong network for the founders, builders, consultants, and scholars who began at Let's Enterprise.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center gap-3">
               <Link
                 to="/alumni"
                 className="group inline-flex items-center gap-2.5 h-12 px-6 rounded-xl bg-accent text-accent-foreground font-bold text-sm shadow-[0_12px_40px_oklch(0.79_0.14_188_/_0.20)] hover:-translate-y-0.5 hover:shadow-[0_16px_45px_oklch(0.79_0.14_188_/_0.28)] transition-all le-focus-ring"
@@ -119,7 +114,7 @@ function WelcomePage() {
               </Link>
             </div>
 
-            <div className="mt-11 flex items-center gap-4">
+            <div className="mt-7 flex items-center gap-4">
               <div className="flex -space-x-2">
                 {FEATURED.map((person) => (
                   <div
@@ -141,7 +136,7 @@ function WelcomePage() {
             <div className="absolute -inset-12 bg-accent/[0.07] blur-3xl rounded-full pointer-events-none" />
             <div className="le-glass relative rounded-[2rem] p-3 sm:p-4">
               <div className="rounded-[1.45rem] border border-white/[0.07] bg-background/75 p-5 sm:p-6 overflow-hidden">
-                <div className="flex items-center justify-between mb-7">
+                <div className="flex items-center justify-between mb-4 lg:mb-5">
                   <div>
                     <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-semibold">Community pulse</p>
                     <h2 className="text-lg font-extrabold mt-1">People making moves</h2>
@@ -151,11 +146,11 @@ function WelcomePage() {
                   </div>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {FEATURED.map((person, index) => (
                     <div
                       key={person.id}
-                      className="group rounded-2xl border border-white/[0.07] bg-white/[0.035] p-4 flex items-center gap-4 hover:border-accent/25 hover:bg-white/[0.06] transition-all"
+                      className="group rounded-2xl border border-white/[0.07] bg-white/[0.035] p-3 lg:p-3.5 flex items-center gap-4 hover:border-accent/25 hover:bg-white/[0.06] transition-all"
                     >
                       <div
                         className="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-muted shadow-lg"
@@ -173,7 +168,7 @@ function WelcomePage() {
                   ))}
                 </div>
 
-                <div className="mt-5 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/[0.08] border border-primary/20 p-5 flex items-end justify-between gap-4">
+                <div className="mt-3.5 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/[0.08] border border-primary/20 p-4 flex items-end justify-between gap-4">
                   <div>
                     <p className="text-3xl font-extrabold tracking-tight">4 cohorts.</p>
                     <p className="text-sm text-muted-foreground mt-1">One compounding network.</p>
@@ -185,14 +180,14 @@ function WelcomePage() {
           </div>
         </div>
 
-        <div className="mt-20 lg:mt-28 grid grid-cols-2 lg:grid-cols-4 border-y border-white/[0.08]">
+        <div className="mt-12 lg:mt-6 grid grid-cols-2 lg:grid-cols-4 border-y border-white/[0.08]">
           {STATS.map(({ icon: Icon, value, label }, index) => (
-            <div key={label} className={`py-6 sm:py-8 px-4 sm:px-6 ${index % 2 ? 'border-l border-white/[0.08]' : ''} ${index > 1 ? 'border-t lg:border-t-0 border-white/[0.08]' : ''} lg:border-l lg:first:border-l-0`}>
+            <div key={label} className={`py-5 lg:py-3.5 px-4 sm:px-6 ${index % 2 ? 'border-l border-white/[0.08]' : ''} ${index > 1 ? 'border-t lg:border-t-0 border-white/[0.08]' : ''} lg:border-l lg:first:border-l-0`}>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Icon className="h-3.5 w-3.5 text-accent/70" />
                 <span className="text-[10px] uppercase tracking-[0.16em] font-semibold">{label}</span>
               </div>
-              <p className="text-3xl sm:text-4xl font-extrabold tracking-tight mt-3">{value}</p>
+              <p className="text-3xl lg:text-[2rem] font-extrabold tracking-tight mt-2">{value}</p>
             </div>
           ))}
         </div>

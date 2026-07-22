@@ -2,6 +2,7 @@ import { Link, useRouterState, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Bell, LogOut, Menu, Search, X } from 'lucide-react'
 import { useAuth } from '@/context/auth'
+import { BrandLogo } from '@/components/brand-logo'
 
 const crumbs: Record<string, string> = {
   '/dashboard': 'Dashboard',
@@ -80,10 +81,7 @@ export default function TopNav() {
       {menuOpen && (
         <div className="lg:hidden fixed inset-0 z-50 bg-background/90 backdrop-blur-2xl p-5">
           <div className="flex items-center justify-between mb-10">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-accent/15 border border-accent/20 grid place-items-center text-xs font-extrabold text-accent">LE</div>
-              <p className="font-extrabold">Let's Enterprise</p>
-            </div>
+            <BrandLogo className="w-[155px]" showNetworkLabel={false} />
             <button onClick={() => setMenuOpen(false)} className="h-10 w-10 rounded-xl border border-white/10 grid place-items-center" aria-label="Close navigation">
               <X className="h-5 w-5" />
             </button>

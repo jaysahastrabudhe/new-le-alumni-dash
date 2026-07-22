@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { readStoredSession } from '@/lib/auth-storage'
+import { BrandLogo } from '@/components/brand-logo'
 
 export const Route = createFileRoute('/login')({
   beforeLoad: () => {
@@ -70,12 +71,8 @@ function LoginPage() {
 
       <div className="relative z-10 min-h-screen grid lg:grid-cols-[1.05fr_0.95fr]">
         <section className="hidden lg:flex flex-col justify-between p-10 xl:p-14 border-r border-white/[0.07] relative overflow-hidden">
-          <Link to="/" className="flex items-center gap-3 w-fit le-focus-ring rounded-xl">
-            <div className="h-10 w-10 rounded-xl bg-accent/15 border border-accent/25 grid place-items-center text-xs font-extrabold text-accent">LE</div>
-            <div>
-              <p className="text-sm font-extrabold leading-none">Let's Enterprise</p>
-              <p className="text-[9px] text-muted-foreground uppercase tracking-[0.18em] mt-1">Alumni Network</p>
-            </div>
+          <Link to="/" className="w-fit le-focus-ring rounded-xl">
+            <BrandLogo />
           </Link>
 
           <div className="max-w-xl">
@@ -109,9 +106,8 @@ function LoginPage() {
         <section className="flex items-center justify-center px-5 py-8 sm:px-10 lg:px-14 relative">
           <div className="w-full max-w-[440px]">
             <div className="flex lg:hidden items-center justify-between mb-10">
-              <Link to="/" className="flex items-center gap-2.5 le-focus-ring rounded-xl">
-                <div className="h-9 w-9 rounded-xl bg-accent/15 border border-accent/25 grid place-items-center text-[10px] font-extrabold text-accent">LE</div>
-                <span className="text-sm font-extrabold">Let's Enterprise</span>
+              <Link to="/" className="le-focus-ring rounded-xl">
+                <BrandLogo className="w-[138px]" showNetworkLabel={false} />
               </Link>
               <Link to="/" className="h-9 w-9 rounded-full border border-white/10 grid place-items-center text-muted-foreground hover:text-foreground hover:bg-white/[0.05] transition-all">
                 <ArrowLeft className="h-4 w-4" />

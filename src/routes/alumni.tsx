@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { animate, stagger } from 'animejs'
 import { Building2, Briefcase, GraduationCap, Sparkles, MapPin, ArrowRight, Search, UsersRound, Maximize2 } from 'lucide-react'
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { BrandLogo } from '@/components/brand-logo'
 import {
   ALUMNI,
   ALUMNI_PORTRAITS,
@@ -38,6 +39,12 @@ const ACTIVE_FILTER_STYLE: Record<AlumniCategory | 'all', string> = {
 
 const CARD_PORTRAIT_POSITION: Partial<Record<string, string>> = {
   'anish-kale': 'center 10%',
+  'tarun-mehta': 'center top',
+  'adwait-rayate': 'center top',
+  'steon-carvalho': 'center top',
+  'bhaskar-adari': 'center top',
+  'mishri-jain': 'center top',
+  'purusoth-reddy': 'center 45%',
 }
 
 function AlumniCard({ alumni }: { alumni: ShowcaseAlumni }) {
@@ -98,7 +105,12 @@ function AlumniCard({ alumni }: { alumni: ShowcaseAlumni }) {
       <DialogContent className="dark w-[min(94vw,58rem)] max-w-none overflow-hidden border-white/10 bg-[oklch(0.115_0.025_275)] p-0 text-white shadow-2xl">
         <div className="grid max-h-[90vh] overflow-auto md:grid-cols-[0.9fr_1.1fr]">
           <div className="relative min-h-[320px] overflow-hidden bg-slate-950 md:min-h-[620px]">
-            <img src={portraitUrl} alt={name} className="absolute inset-0 h-full w-full object-cover" />
+            <img
+              src={portraitUrl}
+              alt={name}
+              className="absolute inset-0 h-full w-full object-cover"
+              style={{ objectPosition: CARD_PORTRAIT_POSITION[alumni.id] ?? 'center' }}
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
             <span className="absolute bottom-5 left-5 rounded-full border border-white/15 bg-black/35 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.16em] text-white/90 backdrop-blur-md">
               LE Alumni · {batchYear}
@@ -224,14 +236,8 @@ function PublicAlumniPage() {
       {/* Nav */}
       <header className="relative z-10 max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-5">
         <div className="le-glass flex items-center justify-between px-4 sm:px-5 py-3 rounded-2xl">
-        <Link to="/" className="flex items-center gap-2.5 le-focus-ring rounded-xl">
-          <div className="h-9 w-9 rounded-xl bg-accent/15 border border-accent/25 flex items-center justify-center flex-shrink-0">
-            <span className="text-[10px] font-extrabold text-accent font-display tracking-tight">LE</span>
-          </div>
-          <div className="min-w-0">
-            <p className="text-sm font-extrabold font-display text-foreground leading-none">Let's Enterprise</p>
-            <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-[0.18em] mt-0.5">Alumni Network</p>
-          </div>
+        <Link to="/" className="le-focus-ring rounded-xl">
+          <BrandLogo className="w-[132px] sm:w-[154px]" />
         </Link>
         <Link
           to="/login"

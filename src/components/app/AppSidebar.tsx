@@ -10,6 +10,7 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { BrandLogo } from '@/components/brand-logo'
 
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -28,15 +29,7 @@ export default function AppSidebar() {
     <aside className="hidden lg:flex flex-col w-[248px] min-h-screen bg-card/80 backdrop-blur-xl border-r border-white/[0.07] relative z-20">
       {/* Brand */}
       <div className="px-5 pt-5 pb-5 border-b border-white/[0.06]">
-        <div className="flex items-center gap-2.5">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-accent/20 to-primary/20 border border-accent/20 flex items-center justify-center flex-shrink-0 shadow-[inset_0_1px_0_oklch(1_0_0_/_0.12)]">
-            <span className="text-[11px] font-extrabold text-accent font-display tracking-tight">LE</span>
-          </div>
-          <div className="min-w-0">
-            <p className="text-sm font-extrabold font-display text-foreground leading-none tracking-tight">Let's Enterprise</p>
-            <p className="text-[9px] text-muted-foreground font-semibold uppercase tracking-[0.18em] mt-0.5">Alumni Network</p>
-          </div>
-        </div>
+        <BrandLogo className="w-[170px]" />
       </div>
 
       {/* Nav */}
