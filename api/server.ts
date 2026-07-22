@@ -1,7 +1,3 @@
-import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
-import { appRouter } from '../server/routers/_app'
-import { createContext } from '../server/context'
-
 const corsHeaders = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST, OPTIONS',
@@ -25,6 +21,14 @@ export default {
     }
 
     try {
+      // Load the API tree inside the request boundary. If a deployment-specific
+      // dependency or environment issue occurs, Vercel can still return JSON
+      // instead of terminating the function before our error handler runs.
+      const [{ fetchRequestHandler }, { appRouter }, { createContext }] = await Promise.all([
+        import('@trpc/server/adapters/fetch'),
+        import('../server/routers/_app'),
+        import('../server/context'),
+      ])
       const response = await fetchRequestHandler({
         endpoint: '/api/trpc',
         req: request,
