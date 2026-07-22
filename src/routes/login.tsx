@@ -21,13 +21,15 @@ function LoginPage() {
   const cardRef = useRef<HTMLDivElement>(null)
   const { login } = useAuth()
   const navigate = useNavigate()
+  const utils = trpc.useUtils()
   const [mode, setMode] = useState<'login' | 'register'>('login')
   const [form, setForm] = useState({ name: '', email: '', password: '' })
   const [error, setError] = useState<string | null>(null)
   const [showResetHelp, setShowResetHelp] = useState(false)
 
   const loginMutation = trpc.auth.login.useMutation({
-    onSuccess: ({ token, user }) => {
+    onSuccess: async ({ token, user }) => {
+      await utils.user.me.reset()
       login(token, user)
       void navigate({ to: '/dashboard' })
     },
@@ -35,7 +37,8 @@ function LoginPage() {
   })
 
   const registerMutation = trpc.auth.register.useMutation({
-    onSuccess: ({ token, user }) => {
+    onSuccess: async ({ token, user }) => {
+      await utils.user.me.reset()
       login(token, user)
       void navigate({ to: '/dashboard' })
     },
